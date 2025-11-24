@@ -1,0 +1,91 @@
+<%- include('../layouts/main', { body: '' }) %>
+
+<div class="max-w-5xl mx-auto py-8">
+    
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+            <h1 class="text-2xl font-bold text-gray-800">Modelos Cadastrados</h1>
+            <p class="text-sm text-gray-500">Gerencie a curadoria e os textos dos santos.</p>
+        </div>
+        <a href="/admin/modelos/novo" class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded shadow flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
+            Novo Modelo
+        </a>
+    </div>
+
+    <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
+        
+        <div class="hidden md:grid grid-cols-12 gap-4 bg-gray-50 px-6 py-3 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+            <div class="col-span-1">Imagem</div>
+            <div class="col-span-5">Nome / Identificação</div>
+            <div class="col-span-3">Categoria</div>
+            <div class="col-span-3 text-right">Ações</div>
+        </div>
+
+        <ul class="divide-y divide-gray-200">
+            <% if (modelos.length === 0) { %>
+                <li class="p-8 text-center text-gray-500 italic">
+                    Nenhum modelo encontrado.
+                </li>
+            <% } %>
+
+            <% modelos.forEach(m => { %>
+            <li class="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-4 items-center hover:bg-gray-50 transition">
+                
+                <div class="col-span-12 md:col-span-1 flex md:block justify-center">
+                    <img src="<%= m.imagem_url || 'https://placehold.co/100' %>" 
+                         alt="<%= m.nome %>" 
+                         class="h-12 w-12 rounded-full object-cover border border-gray-200 shadow-sm">
+                </div>
+
+                <div class="col-span-12 md:col-span-5 text-center md:text-left">
+                    <span class="block text-sm font-bold text-gray-900"><%= m.nome %></span>
+                    <span class="block text-xs text-gray-500 font-mono">/<%= m.slug %></span>
+                </div>
+
+                <div class="hidden md:block col-span-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                        <%= catMap[m.categoria_id] || 'Geral' %>
+                    </span>
+                </div>
+
+                <div class="col-span-12 md:col-span-3 flex justify-center md:justify-end gap-3">
+                    <a href="/pecas/espiritual/<%= m.slug %>" target="_blank" title="Ver no Site" class="text-gray-400 hover:text-blue-600 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    </a>
+                    
+                    <a href="/admin/modelos/<%= m.id %>/editar" title="Editar" class="text-amber-500 hover:text-amber-700 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                    </a>
+
+                    <form action="/admin/modelos/<%= m.id %>/delete" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir <%= m.nome %>?');">
+                        <button type="submit" class="text-gray-400 hover:text-red-600 transition" title="Excluir">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                    </form>
+                </div>
+            </li>
+            <% }) %>
+        </ul>
+
+        <% if (totalPages > 1) { %>
+        <div class="bg-gray-50 px-6 py-4 border-t border-gray-200 flex items-center justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Página <span class="font-medium"><%= currentPage %></span> de <span class="font-medium"><%= totalPages %></span>
+                </p>
+            </div>
+            <div class="flex gap-2">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Anterior</a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">Próxima</a>
+                <% } %>
+            </div>
+        </div>
+        <% } %>
+
+    </div>
+</div>

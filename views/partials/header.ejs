@@ -1,0 +1,29 @@
+<header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+    <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+        <a href="/" class="flex items-center gap-2 mb-4 md:mb-0 group">
+            <img src="/images/ICONE.png" alt="Logo" class="w-8 h-8 opacity-90 group-hover:opacity-100 transition">
+            <span class="font-sans font-medium tracking-wider text-xl text-gray-800 lowercase group-hover:text-cyan-600 transition">
+                brindaria
+            </span>
+        </a>
+
+        <nav class="flex items-center gap-6 text-sm font-semibold text-gray-500 uppercase tracking-wide">
+            <a href="/" class="hover:text-cyan-600 transition">Início</a>
+            <a href="/pecas" class="hover:text-cyan-600 transition">Coleção</a>
+            <a href="/contato" class="hover:text-cyan-600 transition">Contato</a>
+            
+            <% if (locals.isAdmin) { %>
+                <span class="text-gray-300 mx-2">|</span>
+                
+                <a href="/admin/dashboard" class="text-amber-600 hover:text-amber-800 transition">Painel</a>
+                
+                <a href="/admin/modelos" class="text-gray-500 hover:text-cyan-600 transition">Modelos</a>
+                <a href="/admin/pecas" class="text-gray-500 hover:text-cyan-600 transition">Peças</a>
+                
+                <a href="/admin/logout" class="text-gray-400 hover:text-red-600 transition ml-2" title="Sair">
+                    <svg ...></svg>
+                </a>
+            <% } %>
+        </nav>
+    </div>
+</header>
