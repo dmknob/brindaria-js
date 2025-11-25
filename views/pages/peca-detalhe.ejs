@@ -56,6 +56,16 @@
                 </div>
 
                 <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+                    
+                    <% if (modelo.conhecido_como) { %>
+                        <div class="flex items-start gap-3 sm:col-span-2">
+                            <span class="text-2xl">✨</span> <div>
+                                <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Títulos e Alcunhas</span>
+                                <span class="text-gray-700 font-medium"><%= modelo.conhecido_como %></span>
+                            </div>
+                        </div>
+                    <% } %>
+
                     <% if (modelo.dia_celebracao) { %>
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">📅</span>
@@ -65,6 +75,7 @@
                             </div>
                         </div>
                     <% } %>
+                    
                     <% if (modelo.invocado_para) { %>
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🛡️</span>
@@ -74,8 +85,9 @@
                             </div>
                         </div>
                     <% } %>
+
                     <% if (modelo.locais_devocao) { %>
-                        <div class="flex items-start gap-3">
+                        <div class="flex items-start gap-3 sm:col-span-2">
                             <span class="text-2xl">📍</span>
                             <div>
                                 <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Locais de Devoção</span>
@@ -85,11 +97,11 @@
                     <% } %>
                     
                     <% if (modelo.variacoes_nome) { %>
-                        <div class="flex items-start gap-3">
+                        <div class="flex items-start gap-3 sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
                             <span class="text-2xl">🇧🇷</span>
                             <div>
                                 <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Conhecido no Brasil como</span>
-                                <span class="text-gray-700"><%= modelo.variacoes_nome %></span>
+                                <span class="text-gray-600 text-xs leading-relaxed"><%= modelo.variacoes_nome %></span>
                             </div>
                         </div>
                     <% } %>
