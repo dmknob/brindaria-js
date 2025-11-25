@@ -1,7 +1,16 @@
 node_modules/
 .env
 .DS_Store
+
+# Banco de Dados (Todos os arquivos gerados)
 *.db
+*.db-shm
+*.db-wal
 *.sqlite
+
+# Uploads e Logs
 public/uploads/*
+npm-debug.log
+
+# Exceção para o CSS compilado
 !public/css/styles.css

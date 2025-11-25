@@ -12,6 +12,7 @@ const { injectUserVar } = require('./src/middleware/auth');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.set('trust proxy', 1);
 // ---------------------------------------------------------
 // 1. Configurações de View Engine (EJS)
 // ---------------------------------------------------------
