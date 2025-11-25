@@ -44,6 +44,23 @@ app.use(session({
 
 app.use(injectUserVar);
 
+// --- HELPER GLOBAL PARA DATAS ---
+// Disponível em todas as views (EJS)
+app.locals.formatarData = (dataISO) => {
+    if (!dataISO) return 'Data não informada';
+    // Espera formato YYYY-MM
+    try {
+        const [ano, mes] = dataISO.split('-');
+        const dataObj = new Date(ano, mes - 1); // Mês começa em 0 no JS
+        const mesExtenso = dataObj.toLocaleString('pt-BR', { month: 'long' });
+        // Capitaliza a primeira letra (novembro -> Novembro)
+        const mesFinal = mesExtenso.charAt(0).toUpperCase() + mesExtenso.slice(1);
+        return `${mesFinal} de ${ano}`;
+    } catch (e) {
+        return dataISO; // Se der erro, retorna o original
+    }
+};
+
 // ---------------------------------------------------------
 // 3. Arquivos Estáticos
 // ---------------------------------------------------------

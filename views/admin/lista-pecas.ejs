@@ -1,4 +1,4 @@
-<%- include('../layouts/main', { body: '' }) %>
+<%- include('../layouts/layout-top') %>
 
 <div class="max-w-5xl mx-auto py-8">
     
@@ -47,7 +47,10 @@
                         <span class="text-xs font-bold uppercase tracking-wide text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
                             <%= p.modelo_nome %>
                         </span>
-                        <span class="md:hidden text-xs text-gray-400"><%= p.data_producao %></span>
+                        
+                        <span class="md:hidden text-xs text-gray-400 font-medium">
+                            <%= formatarData(p.data_producao) %>
+                        </span>
                     </div>
 
                     <div class="mb-2 md:mb-1">
@@ -64,17 +67,19 @@
                     </div>
                 </div>
 
-                <div class="hidden md:block md:px-6 md:text-right w-40">
-                    <span class="text-sm text-gray-500"><%= p.data_producao %></span>
+                <div class="hidden md:block md:px-6 md:text-right w-40 border-l border-gray-100 h-full flex items-center justify-end">
+                    <span class="text-sm text-gray-500 font-medium">
+                        <%= formatarData(p.data_producao) %>
+                    </span>
                 </div>
 
-                <div class="mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-gray-100 flex gap-3 md:px-6 md:w-auto">
+                <div class="mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 md:border-l border-gray-100 flex gap-3 md:px-6 md:w-auto items-center">
                     
-                    <a href="/admin/pecas/<%= p.id %>/editar" class="flex-1 md:flex-none bg-amber-100 hover:bg-amber-200 text-amber-800 py-2 px-4 rounded font-bold text-center text-sm transition">
+                    <a href="/admin/pecas/<%= p.id %>/editar" class="flex-1 md:flex-none bg-amber-50 hover:bg-amber-100 text-amber-700 py-2 px-4 rounded font-bold text-center text-sm transition border border-amber-200">
                         Editar
                     </a>
 
-                    <a href="/pecas/espiritual/<%= p.modelo_slug %>/<%= p.codigo_exibicao.replace('#','') %>" target="_blank" class="flex-none bg-gray-100 hover:bg-gray-200 text-gray-600 p-2 rounded transition" title="Ver Página Pública">
+                    <a href="/pecas/espiritual/<%= p.modelo_slug %>/<%= p.codigo_exibicao.replace('#','') %>" target="_blank" class="flex-none bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded transition border border-gray-200" title="Ver Página Pública">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
                 </div>
@@ -96,3 +101,5 @@
     <% } %>
 
 </div>
+
+<%- include('../layouts/layout-bottom') %>

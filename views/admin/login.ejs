@@ -1,4 +1,4 @@
-<%- include('../layouts/main', { body: '', hideHeader: true, hideFooter: true }) %>
+<%- include('../layouts/layout-top', { hideHeader: true }) %>
 
 <div class="min-h-screen bg-gray-50 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
     
@@ -85,3 +85,5 @@
         eyeIconOpen.classList.toggle('hidden');
     });
 </script>
+
+<%- include('../layouts/layout-bottom', { hideFooter: true }) %>

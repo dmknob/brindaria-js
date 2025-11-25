@@ -1,4 +1,4 @@
-<%- include('../layouts/main', { body: '', hideHeader: true, hideFooter: true }) %>
+<%- include('../layouts/layout-top', { hideHeader: true }) %>
 
 <div class="max-w-4xl mx-auto px-6 py-12 md:py-20 font-sans text-gray-800">
 
@@ -100,3 +100,5 @@
         </a>
     </footer>
 </div>
+
+<%- include('../layouts/layout-bottom', { hideFooter: true }) %>

@@ -1,36 +1,15 @@
-<%- include('../layouts/main', { body: '' }) %>
+<%- include('../layouts/layout-top') %>
 
 <style>
     @media print {
-        /* Oculta tudo visualmente */
-        body * {
-            visibility: hidden;
-        }
-        /* Exibe a área da oração e seus filhos */
-        #area-oracao, #area-oracao * {
-            visibility: visible;
-        }
-        /* Posiciona a oração no topo absoluto da folha */
+        body * { visibility: hidden; }
+        #area-oracao, #area-oracao * { visibility: visible; }
         #area-oracao {
-            position: absolute;
-            left: 0;
-            top: 0;
-            width: 100%;
-            margin: 0;
-            padding: 2cm; /* Margem de papel */
-            border: none;
-            background: white;
+            position: absolute; left: 0; top: 0; width: 100%;
+            margin: 0; padding: 2cm; border: none; background: white;
         }
-        /* Garante que elementos de UI (botões) não saiam */
         .no-print { display: none !important; }
-        
-        /* Título impresso */
-        #titulo-impresso {
-            display: block !important;
-            visibility: visible !important;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        #titulo-impresso { display: block !important; visibility: visible !important; text-align: center; margin-bottom: 30px; }
     }
 </style>
 
@@ -64,7 +43,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <div>
                             <p class="text-sm text-amber-800 font-medium">Consulte o seu número único ao final da página.</p>
-                            <a href="#verificacao" class="text-xs text-amber-900 underline hover:text-amber-700">Ir para verificação de autenticidade.</a>
+                            <a href="#verificacao" class="text-xs text-amber-900 underline hover:text-amber-700">Ir para verificação de autenticidade &darr;</a>
                         </div>
                     </div>
 
@@ -96,11 +75,21 @@
                         </div>
                     <% } %>
                     <% if (modelo.locais_devocao) { %>
-                        <div class="flex items-start gap-3 sm:col-span-2">
+                        <div class="flex items-start gap-3">
                             <span class="text-2xl">📍</span>
                             <div>
                                 <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Locais de Devoção</span>
                                 <span class="text-gray-700"><%= modelo.locais_devocao %></span>
+                            </div>
+                        </div>
+                    <% } %>
+                    
+                    <% if (modelo.variacoes_nome) { %>
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">🇧🇷</span>
+                            <div>
+                                <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Conhecido no Brasil como</span>
+                                <span class="text-gray-700"><%= modelo.variacoes_nome %></span>
                             </div>
                         </div>
                     <% } %>
@@ -142,8 +131,7 @@
                     <div class="no-print flex justify-center gap-4 mt-8 border-t border-stone-200 pt-6">
                         <button onclick="copiarOracao()" class="text-sm font-bold text-gray-500 hover:text-amber-600 flex items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
-                            Copiar Texto
-                        </button>
+                            Copiar Oração </button>
                         <button onclick="window.print()" class="text-sm font-bold text-gray-500 hover:text-amber-600 flex items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                             Imprimir Oração
@@ -155,7 +143,7 @@
                 <div id="verificacao"></div>
 
                 <% if (peca) { %>
-                <section class="mt-12 bg-amber-50 border-2 border-amber-200 rounded-xl p-8 shadow-sm relative overflow-hidden scroll-mt-24">
+                <section id="certificado" class="mt-12 bg-amber-50 border-2 border-amber-200 rounded-xl p-8 shadow-sm relative overflow-hidden scroll-mt-24">
                     <div class="absolute top-0 right-0 -mt-4 -mr-4 opacity-10 text-amber-500 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
@@ -167,7 +155,7 @@
                         </div>
 
                         <h3 class="text-3xl font-serif font-bold text-gray-900 mb-1">Peça <%= peca.codigo_exibicao %></h3>
-                        <p class="text-gray-500 text-sm mb-6">Produzida em <%= peca.data_producao %></p>
+                        <p class="text-gray-500 text-sm mb-6">Produzida em <%= formatarData(peca.data_producao) %></p>
 
                         <% if (peca.inscricao_base) { %>
                             <div class="mb-6">
@@ -191,6 +179,7 @@
 
                 <section class="mt-16 pt-8 border-t border-gray-200 no-print">
                     <h4 class="text-lg font-bold text-gray-900 mb-4 text-center">Verificar Outra Peça</h4>
+                    
                     <div class="max-w-md mx-auto bg-gray-50 p-6 rounded-lg border border-gray-200">
                         <form id="formBusca" class="flex flex-col gap-4">
                             <div>
@@ -206,6 +195,16 @@
                             </button>
                         </form>
                     </div>
+
+                    <div class="max-w-2xl mx-auto mt-8 flex items-start gap-3 text-gray-500 text-sm bg-white p-4 rounded border border-gray-100">
+                        <span class="text-xl">🛡️</span>
+                        <div>
+                            <strong class="block text-gray-700 mb-1">Nota sobre a Personalização</strong>
+                            <p>Por política de segurança e privacidade, a Brindaria utiliza apenas o primeiro nome ou apelido nas dedicatórias digitais públicas.</p>
+                            <p class="mt-1">Acreditamos que a proteção de quem você ama é parte do presente.</p>
+                        </div>
+                    </div>
+
                 </section>
 
             </div>
@@ -226,16 +225,26 @@
     document.getElementById('formBusca').addEventListener('submit', function(e) {
         e.preventDefault();
         let codigo = document.getElementById('codigoInput').value.trim();
-        
-        // Remove qualquer '#' que o usuário tenha digitado
         codigo = codigo.replace('#', '');
-        
-        // CORREÇÃO CRÍTICA: Garante que números como '1' virem '001'
-        // O método padStart preenche com zeros à esquerda até ter 3 caracteres
         codigo = codigo.padStart(3, '0');
-        
-        // Redireciona
         const baseUrl = '/pecas/espiritual/<%= modelo.slug %>';
         window.location.href = `${baseUrl}/${codigo}#certificado`;
     });
+
+    // AUTO-SCROLL (Novo)
+    // Se tiver uma peça carregada e a URL tiver hash #certificado, o navegador já rola.
+    // Mas para garantir, podemos forçar se 'peca' existir
+    <% if (peca) { %>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Pequeno delay para garantir que imagens carreguem e layout estabilize
+            setTimeout(() => {
+                const elemento = document.getElementById("certificado");
+                if(elemento) {
+                    elemento.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }, 500);
+        });
+    <% } %>
 </script>
+
+<%- include('../layouts/layout-bottom') %>

@@ -33,13 +33,18 @@ router.post('/login', loginLimiter, adminController.postLogin);
 // Logout
 router.get('/logout', adminController.logout);
 
+//  ####################################################
 // Rotas Protegidas (Middleware aplicado a todas abaixo)
 router.use(isAuthenticated);
 
 router.get('/dashboard', adminController.getDashboard);
 
+// --- CATEGORIAS ---
+router.get('/categorias', adminController.getCategorias);
+router.post('/categorias', adminController.postNovaCategoria);
+
 // MODELOS
-router.get('/modelos', adminController.getModelos); // <--- NOVA LINHA
+router.get('/modelos', adminController.getModelos);
 router.get('/modelos/novo', adminController.getNovoModelo);
 router.post('/modelos/novo', adminController.postNovoModelo);
 // --- ROTAS DE EDIÇÃO DE MODELO ---
@@ -55,4 +60,7 @@ router.post('/pecas/nova', adminController.postNovaPeca);
 router.get('/pecas/:id/editar', adminController.getEditarPeca);
 router.post('/pecas/:id/editar', adminController.postEditarPeca);
 router.post('/pecas/:id/delete', adminController.postDeletarPeca); // Rota de Exclusão
+
+//  ####################################################
+
 module.exports = router;

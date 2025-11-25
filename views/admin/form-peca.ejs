@@ -1,4 +1,4 @@
-<%- include('../layouts/main', { body: '' }) %>
+<%- include('../layouts/layout-top') %>
 
 <div class="max-w-3xl mx-auto py-8">
     
@@ -58,6 +58,19 @@
                 <label class="block text-gray-700 font-bold mb-2">Acabamento</label>
                 <input type="text" name="acabamento" value="<%= peca ? peca.acabamento : 'Visual Mármore' %>" class="w-full p-3 border border-gray-300 rounded">
             </div>
+
+            <div>
+                <label class="block text-gray-700 font-bold mb-2">Data de Produção</label>
+                <input type="month" name="data_producao" required
+                       value="<%= peca ? peca.data_producao : '' %>" 
+                       placeholder="AAAA-MM"
+                       class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 bg-white">
+                
+                <p class="text-xs text-gray-500 mt-1">
+                    Selecione no calendário ou digite: <strong>Ano-Mês</strong> (ex: 2025-11).
+                </p>
+            </div>
+
         </div>
 
         <div>
@@ -119,3 +132,5 @@
     });
 </script>
 <% } %>
+
+<%- include('../layouts/layout-bottom') %>

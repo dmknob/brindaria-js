@@ -90,6 +90,40 @@ module.exports = {
     },
 
     // =========================================
+    // GESTÃO DE CATEGORIAS (AQUI ESTÁ!)
+    // =========================================
+
+    getCategorias: (req, res) => {
+        const categorias = db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all();
+        
+        // Conta quantos modelos existem em cada categoria (para info visual)
+        const contagem = db.prepare('SELECT categoria_id, COUNT(*) as total FROM modelos GROUP BY categoria_id').all();
+        const mapContagem = {};
+        contagem.forEach(c => mapContagem[c.categoria_id] = c.total);
+
+        res.render('admin/categorias', { 
+            title: 'Categorias', 
+            categorias,
+            mapContagem 
+        });
+    },
+
+    postNovaCategoria: (req, res) => {
+        const { nome } = req.body;
+        const slug = slugify(nome, { lower: true, strict: true });
+
+        try {
+            const insert = db.prepare('INSERT INTO categorias (nome, slug) VALUES (?, ?)');
+            insert.run(nome, slug);
+            res.redirect('/admin/categorias');
+        } catch (err) {
+            console.error(err);
+            // Se der erro (ex: slug duplicado), redireciona com flag de erro
+            res.redirect('/admin/categorias?error=duplicate');
+        }
+    },
+
+    // =========================================
     // GESTÃO DE MODELOS (CRUD)
     // =========================================
 
@@ -139,22 +173,21 @@ module.exports = {
             nome, categoria_id, subtitulo, colecao, 
             conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
             historia, oracao, detalhes_visuais, 
-            imagem_url_externa, imagem_arquivo_manual // <--- Novos inputs
+            imagem_url_externa, imagem_arquivo_manual, slug
         } = req.body;
         
-        const slug = slugify(nome, { lower: true, strict: true });
+        // Usa o slug do form, ou gera do nome se estiver vazio. Limpa caracteres inválidos.
+        const finalSlug = slugify(slug || nome, { lower: true, strict: true });
 
         try {
-            let finalImagePath = '/images/placeholder.jpg'; // Padrão se nada for informado
+            let finalImagePath = '/images/placeholder.jpg'; // Padrão
 
-            // Lógica da Imagem: Prioridade para Download URL > Nome Manual
+            // Prioridade: URL Externa > Arquivo Manual
             if (imagem_url_externa && imagem_url_externa.trim() !== "") {
                 const ext = path.extname(imagem_url_externa.split('?')[0]) || '.jpg';
                 const filename = `${slug}${ext}`;
                 finalImagePath = await downloadImage(imagem_url_externa, filename);
             } else if (imagem_arquivo_manual && imagem_arquivo_manual.trim() !== "") {
-                // Usuário digitou o nome do arquivo que já está na pasta (ex: "foto.jpg")
-                // Forçamos o caminho padrão
                 finalImagePath = `/uploads/modelos/${imagem_arquivo_manual.trim()}`;
             }
 
@@ -178,6 +211,7 @@ module.exports = {
             res.status(500).send("Erro ao criar modelo: " + err.message);
         }
     },
+
     // Formulário de Edição
     getEditarModelo: (req, res) => {
         const { id } = req.params;
@@ -200,20 +234,24 @@ module.exports = {
             nome, categoria_id, subtitulo, colecao, 
             conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
             historia, oracao, detalhes_visuais, 
-            imagem_url_externa, imagem_arquivo_manual 
+            imagem_url_externa, imagem_arquivo_manual,
+            slug // <--- Recebe do form
         } = req.body;
 
         try {
+            // Tratamento do Slug na Edição
+            // Se o usuário apagou o slug, regenera do nome. Se preencheu, sanitiza.
+            const finalSlug = slugify(slug || nome, { lower: true, strict: true });
+
             let imageSqlFragment = "";
             const params = [
                 categoria_id, nome, subtitulo, colecao,
                 conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
-                historia, oracao, detalhes_visuais
+                historia, oracao, detalhes_visuais,
+                finalSlug // <--- Adiciona na lista de params
             ];
-
-            // Só atualiza imagem se o usuário preencheu algum dos campos de imagem
+            // Só baixa nova imagem se o usuário preencheu algum campo
             if (imagem_url_externa && imagem_url_externa.trim() !== "") {
-                // Caso 1: Download
                 const currentSlug = db.prepare('SELECT slug FROM modelos WHERE id = ?').get(id).slug;
                 const ext = path.extname(imagem_url_externa.split('?')[0]) || '.jpg';
                 const filename = `${currentSlug}${ext}`;
@@ -223,9 +261,7 @@ module.exports = {
                 params.push(localImagePath);
 
             } else if (imagem_arquivo_manual && imagem_arquivo_manual.trim() !== "") {
-                // Caso 2: Nome manual
                 const localImagePath = `/uploads/modelos/${imagem_arquivo_manual.trim()}`;
-                
                 imageSqlFragment = ", imagem_url = ?";
                 params.push(localImagePath);
             }
@@ -236,7 +272,8 @@ module.exports = {
                 UPDATE modelos SET 
                     categoria_id = ?, nome = ?, subtitulo = ?, colecao = ?,
                     conhecido_como = ?, dia_celebracao = ?, invocado_para = ?, locais_devocao = ?, variacoes_nome = ?,
-                    historia = ?, oracao = ?, detalhes_visuais = ?
+                    historia = ?, oracao = ?, detalhes_visuais = ?,
+                    slug = ? 
                     ${imageSqlFragment}
                 WHERE id = ?
             `);
@@ -253,6 +290,7 @@ module.exports = {
     // =========================================
     // GESTÃO DE PEÇAS (CRUD)
     // =========================================
+
     // Listagem com Filtro e Paginação
     getPecas: (req, res) => {
         const page = parseInt(req.query.page) || 1;
@@ -302,18 +340,18 @@ module.exports = {
             totalPages
         });
     },
+
     getNovaPeca: (req, res) => {
         const modelos = db.prepare('SELECT id, nome FROM modelos ORDER BY nome').all();
-        // Passamos peca: null para usar a mesma view na criação
         res.render('admin/form-peca', { title: 'Registrar Peça', modelos, peca: null });
     },
 
     postNovaPeca: (req, res) => {
-        // Atualizado para o novo Schema V2 (com inscricao_base, tamanho, etc)
+        // Adicione data_producao na extração do body
         const { 
             modelo_id, codigo_exibicao, codigo_sequencial, 
             inscricao_base, tamanho, material, acabamento,
-            cliente_nome, mensagem 
+            cliente_nome, mensagem, data_producao 
         } = req.body;
         
         try {
@@ -325,24 +363,19 @@ module.exports = {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
             
-            // Define data atual formatada simples para produção
-            const agora = new Date();
-            const dataProd = agora.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
-            // Ex: "novembro de 2025"
-
+            // Removemos a geração automática de data. Usamos a variável data_producao direto.
             insert.run(
                 modelo_id, codigo_sequencial, codigo_exibicao,
                 inscricao_base, tamanho, material, acabamento,
-                cliente_nome, mensagem, dataProd
+                cliente_nome, mensagem, data_producao
             );
             
-            res.redirect('/admin/dashboard');
+            res.redirect('/admin/pecas');
         } catch (err) {
             console.error(err);
             res.status(500).send("Erro ao salvar peça: " + err.message);
         }
     },
-    // ...
 
     // --- EDIÇÃO DE PEÇAS ---
     
@@ -362,9 +395,10 @@ module.exports = {
 
     postEditarPeca: (req, res) => {
         const { id } = req.params;
+        // Adicione data_producao aqui
         const { 
             modelo_id, codigo_exibicao, inscricao_base, 
-            tamanho, material, acabamento, cliente_nome, mensagem 
+            tamanho, material, acabamento, cliente_nome, mensagem, data_producao 
         } = req.body;
 
         try {
@@ -372,13 +406,14 @@ module.exports = {
                 UPDATE pecas SET 
                     modelo_id = ?, codigo_exibicao = ?, inscricao_base = ?,
                     tamanho = ?, material = ?, acabamento = ?,
-                    cliente_nome = ?, mensagem = ?
+                    cliente_nome = ?, mensagem = ?, data_producao = ?
                 WHERE id = ?
             `);
             
+            // Adicione data_producao nos parâmetros (antes do ID)
             update.run(
                 modelo_id, codigo_exibicao, inscricao_base,
-                tamanho, material, acabamento, cliente_nome, mensagem,
+                tamanho, material, acabamento, cliente_nome, mensagem, data_producao,
                 id
             );
             
