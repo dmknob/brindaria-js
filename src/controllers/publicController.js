@@ -86,6 +86,32 @@ const publicController = {
             description: metaDescription,
             canonical: peca ? canonical : null // Só manda canonical se for página filha
         });
+    },
+    // Rota: /sitemap.xml
+    getSitemap: (req, res) => {
+        const modelos = db.prepare('SELECT slug FROM modelos').all();
+        const baseUrl = 'https://brindaria.com.br';
+        
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+            <url><loc>${baseUrl}/contato</loc><priority>0.5</priority></url>
+            <url><loc>${baseUrl}/pecas</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+        `;
+
+        modelos.forEach(m => {
+            xml += `
+            <url>
+                <loc>${baseUrl}/pecas/espiritual/${m.slug}</loc>
+                <changefreq>monthly</changefreq>
+                <priority>0.9</priority>
+            </url>`;
+        });
+
+        xml += '</urlset>';
+        
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
     }
 };
 

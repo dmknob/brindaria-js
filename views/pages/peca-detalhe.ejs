@@ -13,15 +13,15 @@
             top: 0; 
             width: 100%;
             margin: 0; 
-            padding: 1.0cm; /* Margem reduzida para caber mais */
+            padding: 1.5cm;
             border: none !important; 
             background: white !important;
         }
         
         /* Ajustes de Texto para Economizar Espaço */
         #area-oracao .texto-oracao {
-            font-size: 15pt !important; /* Fonte um pouco menor */
-            line-height: 1.3 !important; /* Menos espaçamento entre linhas */
+            font-size: 16pt !important;
+            line-height: 1.4 !important;
         }
         
         /* Oculta UI */
@@ -59,11 +59,11 @@
             <div class="md:col-span-7 lg:col-span-8 space-y-8">
                 
                 <div>
-                    <div class="bg-amber-50 border-l-4 border-amber-400 p-4 mb-6 rounded-r flex items-start gap-3 no-print">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <div class="bg-cyan-50 border-l-4 border-cyan-500 p-4 mb-6 rounded-r flex items-start gap-3 no-print">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-cyan-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <div>
-                            <p class="text-sm text-amber-800 font-medium">Consulte o seu número único ao final da página.</p>
-                            <a href="#verificacao" class="text-xs text-amber-900 underline hover:text-amber-700">Ir para verificação de autenticidade &darr;</a>
+                            <p class="text-sm text-cyan-900 font-medium">Consulte o seu número único ao final da página.</p>
+                            <a href="#verificacao" class="text-xs text-cyan-700 underline hover:text-cyan-900">Ir para verificação de autenticidade &darr;</a>
                         </div>
                     </div>
 
@@ -71,7 +71,7 @@
                         <%= modelo.nome %>
                     </h1>
                     <% if (modelo.subtitulo) { %>
-                        <h2 class="text-xl text-amber-700 italic font-serif"><%- modelo.subtitulo %></h2>
+                        <h2 class="text-xl text-cyan-700 italic font-serif"><%- modelo.subtitulo %></h2>
                     <% } %>
                 </div>
 
@@ -128,13 +128,13 @@
                     <% } %>
                 </div>
 
-                <section class="prose prose-lg prose-amber text-gray-600 max-w-none text-justify">
+                <section class="prose prose-lg prose-cyan text-gray-600 max-w-none text-justify">
                     <h3 class="font-serif font-bold text-2xl text-gray-900 mb-4">História e Significado</h3>
                     <%- modelo.historia %>
                 </section>
 
                 <% if (modelo.detalhes_visuais) { %>
-                <section class="prose prose-lg prose-amber text-gray-600 max-w-none text-justify border-t pt-8">
+                <section class="prose prose-lg prose-cyan text-gray-600 max-w-none text-justify border-t pt-8">
                     <h3 class="font-serif font-bold text-2xl text-gray-900 mb-4">Como Identificar</h3>
                     <%- modelo.detalhes_visuais %>
                 </section>
@@ -142,7 +142,6 @@
 
                 <% if (modelo.oracao) { %>
                 <section id="area-oracao" class="mt-12 bg-stone-50 border border-stone-200 p-8 md:p-12 rounded-lg relative">
-                    
                     <div id="titulo-impresso" style="display: none;">
                         <h1 style="font-size: 22pt; font-weight: bold; margin-bottom: 5px;"><%= modelo.nome %></h1>
                         <p style="font-size: 12pt; color: #666;">Brindaria - Arte Espiritual</p>
@@ -150,7 +149,7 @@
                     </div>
 
                     <div class="text-center mb-6">
-                        <span class="text-2xl text-amber-500">❝</span>
+                        <span class="text-2xl text-cyan-500">❝</span>
                     </div>
                     
                     <div class="texto-oracao font-serif text-xl md:text-2xl leading-relaxed text-gray-800 text-center italic">
@@ -158,7 +157,7 @@
                     </div>
 
                     <div class="text-center mt-6">
-                        <span class="text-2xl text-amber-500">❞</span>
+                        <span class="text-2xl text-cyan-500">❞</span>
                         <p class="text-xs text-gray-400 font-bold uppercase tracking-widest mt-2">Oração Tradicional</p>
                     </div>
 
@@ -167,12 +166,12 @@
                     </div>
 
                     <div class="no-print flex justify-center gap-4 mt-8 border-t border-stone-200 pt-6">
-                        <button onclick="copiarOracao(this)" class="text-sm font-bold text-gray-500 hover:text-amber-600 flex items-center gap-2 transition group">
+                        <button onclick="copiarOracao(this)" class="text-sm font-bold text-gray-500 hover:text-cyan-600 flex items-center gap-2 transition group">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                             <span class="btn-text">Copiar Oração</span>
                         </button>
                         
-                        <button onclick="window.print()" class="text-sm font-bold text-gray-500 hover:text-amber-600 flex items-center gap-2 transition">
+                        <button onclick="window.print()" class="text-sm font-bold text-gray-500 hover:text-cyan-600 flex items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                             Imprimir Oração
                         </button>
@@ -183,14 +182,14 @@
                 <div id="verificacao"></div>
 
                 <% if (peca) { %>
-                <section id="certificado" class="mt-12 bg-amber-50 border-2 border-amber-200 rounded-xl p-8 shadow-sm relative overflow-hidden scroll-mt-24">
-                    <div class="absolute top-0 right-0 -mt-4 -mr-4 opacity-10 text-amber-500 pointer-events-none">
+                <section id="certificado" class="mt-12 bg-cyan-50 border-2 border-cyan-200 rounded-xl p-8 shadow-sm relative overflow-hidden scroll-mt-24">
+                    <div class="absolute top-0 right-0 -mt-4 -mr-4 opacity-10 text-cyan-600 pointer-events-none">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-40 w-40" fill="currentColor" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
 
                     <div class="relative z-10">
-                        <div class="flex items-center gap-2 mb-4 text-amber-800">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                        <div class="flex items-center gap-2 mb-4 text-cyan-800">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
                             <span class="text-xs font-bold uppercase tracking-wider">Autenticidade Validada</span>
                         </div>
 
@@ -199,15 +198,15 @@
 
                         <% if (peca.inscricao_base) { %>
                             <div class="mb-6">
-                                <span class="block text-xs font-bold text-amber-700 uppercase mb-1">Inscrição na Base</span>
+                                <span class="block text-xs font-bold text-cyan-700 uppercase mb-1">Inscrição na Base</span>
                                 <p class="text-2xl font-serif text-gray-800 italic">"<%= peca.inscricao_base %>"</p>
                             </div>
                         <% } %>
 
-                        <div class="border-t border-amber-200 pt-6">
+                        <div class="border-t border-cyan-200 pt-6">
                             <p class="text-sm font-bold text-gray-500 uppercase mb-2">Dedicatória</p>
                             <p class="text-lg text-gray-800 leading-relaxed italic font-serif">
-                                "<%- peca.mensagem %>"
+                                "<%= peca.mensagem %>"
                             </p>
                             <% if (peca.cliente_nome) { %>
                                 <p class="text-right text-sm text-gray-600 mt-4 font-medium">— Oferecido por <%= peca.cliente_nome %></p>
@@ -225,11 +224,11 @@
                                 <label class="block text-sm font-bold text-gray-700 mb-2">Código da Peça</label>
                                 <div class="flex shadow-sm">
                                     <span class="inline-flex items-center px-3 rounded-l border border-r-0 border-gray-300 bg-gray-100 text-gray-500 font-mono text-sm">#</span>
-                                    <input type="text" id="codigoInput" class="flex-1 p-3 border border-gray-300 rounded-r focus:outline-none focus:border-amber-500 font-mono uppercase" placeholder="001" required>
+                                    <input type="text" id="codigoInput" class="flex-1 p-3 border border-gray-300 rounded-r focus:outline-none focus:border-cyan-500 font-mono uppercase" placeholder="001" required>
                                 </div>
                                 <p class="text-xs text-gray-500 mt-1">Digite o número gravado na base.</p>
                             </div>
-                            <button type="submit" class="bg-gray-900 hover:bg-gray-800 text-white font-bold py-3 px-4 rounded transition shadow">
+                            <button type="submit" class="bg-gray-900 hover:bg-cyan-800 text-white font-bold py-3 px-4 rounded transition shadow">
                                 Consultar Autenticidade
                             </button>
                         </form>
@@ -251,7 +250,7 @@
 </article>
 
 <script>
-    // Copiar Oração (Sem Alert, com feedback no botão)
+    // Copiar Oração (Feedback em Ciano/Verde)
     function copiarOracao(btn) {
         const texto = `<%= modelo.oracao %>`;
         navigator.clipboard.writeText(texto).then(() => {
