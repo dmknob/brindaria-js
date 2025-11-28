@@ -2,32 +2,14 @@
 
 <style>
     @media print {
-        /* Reset total */
         body * { visibility: hidden; }
-        
-        /* Área da Oração */
         #area-oracao, #area-oracao * { visibility: visible; }
         #area-oracao {
-            position: absolute; 
-            left: 0; 
-            top: 0; 
-            width: 100%;
-            margin: 0; 
-            padding: 1.5cm;
-            border: none !important; 
-            background: white !important;
+            position: absolute; left: 0; top: 0; width: 100%;
+            margin: 0; padding: 1.5cm; border: none !important; background: white !important;
         }
-        
-        /* Ajustes de Texto para Economizar Espaço */
-        #area-oracao .texto-oracao {
-            font-size: 16pt !important;
-            line-height: 1.4 !important;
-        }
-        
-        /* Oculta UI */
+        #area-oracao .texto-oracao { font-size: 16pt !important; line-height: 1.4 !important; }
         .no-print { display: none !important; }
-        
-        /* Elementos exclusivos de impressão */
         #titulo-impresso { display: block !important; visibility: visible !important; text-align: center; margin-bottom: 20px; }
         #rodape-impresso { display: block !important; visibility: visible !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 10pt; color: #666; padding-bottom: 10mm;}
     }
@@ -76,7 +58,6 @@
                 </div>
 
                 <div class="bg-gray-50 border border-gray-100 rounded-lg p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                    
                     <% if (modelo.conhecido_como) { %>
                         <div class="flex items-start gap-3 sm:col-span-2">
                             <span class="text-2xl">✨</span>
@@ -86,7 +67,6 @@
                             </div>
                         </div>
                     <% } %>
-
                     <% if (modelo.dia_celebracao) { %>
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">📅</span>
@@ -96,7 +76,6 @@
                             </div>
                         </div>
                     <% } %>
-                    
                     <% if (modelo.invocado_para) { %>
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🛡️</span>
@@ -106,7 +85,6 @@
                             </div>
                         </div>
                     <% } %>
-
                     <% if (modelo.locais_devocao) { %>
                         <div class="flex items-start gap-3 sm:col-span-2">
                             <span class="text-2xl">📍</span>
@@ -116,7 +94,6 @@
                             </div>
                         </div>
                     <% } %>
-                    
                     <% if (modelo.variacoes_nome) { %>
                         <div class="flex items-start gap-3 sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
                             <span class="text-2xl">🇧🇷</span>
@@ -170,7 +147,6 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:scale-110 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
                             <span class="btn-text">Copiar Oração</span>
                         </button>
-                        
                         <button onclick="window.print()" class="text-sm font-bold text-gray-500 hover:text-cyan-600 flex items-center gap-2 transition">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" /></svg>
                             Imprimir Oração
@@ -189,12 +165,29 @@
 
                     <div class="relative z-10">
                         <div class="flex items-center gap-2 mb-4 text-cyan-800">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
                             <span class="text-xs font-bold uppercase tracking-wider">Autenticidade Validada</span>
                         </div>
 
-                        <h3 class="text-3xl font-serif font-bold text-gray-900 mb-1">Peça <%= peca.codigo_exibicao %></h3>
-                        <p class="text-gray-500 text-sm mb-6">Produzida em <%= formatarData(peca.data_producao) %></p>
+                        <h3 class="text-3xl font-serif font-bold text-gray-900 mb-4">Peça <%= peca.codigo_exibicao %></h3>
+
+                        <div class="bg-white/60 rounded-lg p-4 mb-6 border border-cyan-100 text-sm">
+                            <h4 class="font-bold text-cyan-900 mb-2 uppercase text-xs tracking-wide">Ficha Técnica da Peça</h4>
+                            <ul class="space-y-1 text-gray-700">
+                                <li>
+                                    <strong>Modelo:</strong> <%= modelo.nome %> 
+                                    <% if (modelo.colecao) { %>
+                                        <span class="text-gray-500">(Coleção <%= modelo.colecao %>)</span>
+                                    <% } %>
+                                </li>
+                                <li><strong>Material:</strong> <%= peca.material || 'N/A' %></li>
+                                <li><strong>Acabamento:</strong> <%= peca.acabamento || 'N/A' %></li>
+                                <% if (peca.tamanho) { %>
+                                    <li><strong>Tamanho:</strong> <%= peca.tamanho %></li>
+                                <% } %>
+                                <li><strong>Data de Produção:</strong> <%= formatarData(peca.data_producao) %></li>
+                            </ul>
+                        </div>
 
                         <% if (peca.inscricao_base) { %>
                             <div class="mb-6">
@@ -205,9 +198,9 @@
 
                         <div class="border-t border-cyan-200 pt-6">
                             <p class="text-sm font-bold text-gray-500 uppercase mb-2">Dedicatória</p>
-                            <p class="text-lg text-gray-800 leading-relaxed italic font-serif">
-                                "<%= peca.mensagem %>"
-                            </p>
+                            
+                            <p class="text-lg text-gray-800 leading-relaxed italic font-serif whitespace-pre-line"><%= peca.mensagem %></p>
+                            
                             <% if (peca.cliente_nome) { %>
                                 <p class="text-right text-sm text-gray-600 mt-4 font-medium">— Oferecido por <%= peca.cliente_nome %></p>
                             <% } %>
@@ -250,17 +243,14 @@
 </article>
 
 <script>
-    // Copiar Oração (Feedback em Ciano/Verde)
     function copiarOracao(btn) {
         const texto = `<%= modelo.oracao %>`;
         navigator.clipboard.writeText(texto).then(() => {
             const span = btn.querySelector('.btn-text');
             const original = span.innerText;
-            
             span.innerText = "Copiado!";
             btn.classList.remove('text-gray-500');
             btn.classList.add('text-green-600');
-            
             setTimeout(() => {
                 span.innerText = original;
                 btn.classList.add('text-gray-500');
