@@ -103,7 +103,7 @@ const publicController = {
             xml += `
             <url>
                 <loc>${baseUrl}/pecas/espiritual/${m.slug}</loc>
-                <changefreq>monthly</changefreq>
+                <changefreq>weekly</changefreq>
                 <priority>0.9</priority>
             </url>`;
         });

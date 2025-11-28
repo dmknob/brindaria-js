@@ -1,1 +1,26 @@
-<h1>404 - Não encontrado</h1>
+<%- include('../layouts/layout-top') %>
+
+<div class="min-h-[60vh] flex flex-col justify-center items-center text-center px-6">
+    <div class="text-amber-200 mb-6">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        </svg>
+    </div>
+    
+    <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-800 mb-4">Página não encontrada</h1>
+    
+    <p class="text-lg text-gray-600 max-w-md mx-auto mb-8">
+        Parece que o caminho que você procurava não existe ou mudou de lugar.
+    </p>
+
+    <div class="flex gap-4 justify-center">
+        <a href="/" class="bg-gray-900 text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition shadow-lg">
+            Voltar ao Início
+        </a>
+        <a href="/contato" class="text-gray-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition border border-gray-300">
+            Fale Conosco
+        </a>
+    </div>
+</div>
+
+<%- include('../layouts/layout-bottom') %>

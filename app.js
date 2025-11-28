@@ -66,8 +66,12 @@ app.locals.formatarData = (dataISO) => {
 // 3. Arquivos Estáticos
 // ---------------------------------------------------------
 // Serve a pasta 'public' (CSS, JS, Imagens, Uploads)
-// Ex: public/css/styles.css fica acessível em /css/styles.css
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve a pasta 'public' com Cache de 1 dia (86400000 ms)
+// Isso faz o site carregar instantaneamente para quem volta
+app.use(express.static(path.join(__dirname, 'public'), {
+    maxAge: '1d', 
+    etag: false
+}));
 
 // ---------------------------------------------------------
 // 4. Rotas (Importação)
@@ -85,15 +89,16 @@ app.use('/', publicRoutes);
 // ---------------------------------------------------------
 // 5. Tratamento de Erros (404 e 500)
 // ---------------------------------------------------------
+
 // Middleware para 404 (Página não encontrada)
 app.use((req, res, next) => {
     res.status(404).render('pages/404', { title: 'Página não encontrada' });
 });
 
-// Middleware para erros de servidor
+// Middleware para erros de servidor (500)
 app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Algo deu errado no servidor da Brindaria.');
+    console.error(err.stack); // Log do erro no terminal para você ver
+    res.status(500).render('pages/500', { title: 'Erro Interno' });
 });
 
 // ---------------------------------------------------------
