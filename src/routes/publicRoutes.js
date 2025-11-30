@@ -27,4 +27,8 @@ router.get('/v/:slug/:codigo', (req, res) => {
 // O :codigo? com interrogação diz que é opcional
 router.get('/pecas/:categoria/:slug/:codigo?', publicController.getDetalhe);
 
+// Validação de Peça (Busca por Código ou Chave)
+router.post('/validar', publicController.postValidarPeca);
+router.get('/validar', (req, res) => res.redirect('/')); // Redireciona se tentar acessar via GET
+
 module.exports = router;

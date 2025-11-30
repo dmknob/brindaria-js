@@ -1,135 +1,207 @@
 <%- include('../layouts/layout-top') %>
 
-<div class="max-w-4xl mx-auto py-6 md:py-10 px-4">
-    
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
-            <%= peca ? 'Editar Peça' : 'Registrar Nova Peça' %>
-        </h2>
-        <a href="/admin/pecas" class="text-base text-gray-500 hover:text-gray-800 flex items-center gap-2 py-2 px-4 border border-gray-300 rounded bg-white">
-            <span>←</span> Cancelar
-        </a>
-    </div>
+    <div class="max-w-4xl mx-auto py-6 md:py-10 px-4">
 
-    <form action="/admin/pecas/<%= peca ? peca.id + '/editar' : 'nova' %>" method="POST" class="bg-white p-6 md:p-8 rounded-xl shadow-sm space-y-8 border border-gray-200">
-        
-        <div class="border-b border-gray-100 pb-8">
-            <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <span class="bg-amber-100 text-amber-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
-                Dados da Peça
-            </h3>
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+                <%= peca ? 'Editar Peça' : 'Registrar Nova Peça' %>
+            </h2>
+            <a href="/admin/pecas"
+                class="text-base text-gray-500 hover:text-gray-800 flex items-center gap-2 py-2 px-4 border border-gray-300 rounded bg-white">
+                <span>←</span> Cancelar
+            </a>
+        </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                
-                <div class="col-span-1">
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Modelo *</label>
-                    <div class="relative">
-                        <select name="modelo_id" id="modeloSelect" required class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-base appearance-none">
-                            <option value="" disabled <%= !peca ? 'selected' : '' %>>Selecione na lista...</option>
-                            <% modelos.forEach(m => { %>
-                                <option value="<%= m.id %>" <%= (peca && peca.modelo_id === m.id) ? 'selected' : '' %>>
-                                    <%= m.nome %>
-                                </option>
-                            <% }) %>
-                        </select>
-                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
-                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+        <form action="/admin/pecas/<%= peca ? peca.id + '/editar' : 'nova' %>" method="POST"
+            class="bg-white p-6 md:p-8 rounded-xl shadow-sm space-y-8 border border-gray-200">
+
+            <div class="border-b border-gray-100 pb-8">
+                <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span
+                        class="bg-amber-100 text-amber-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">1</span>
+                    Dados da Peça
+                </h3>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+                    <div class="col-span-1">
+                        <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Modelo
+                            *</label>
+                        <div class="relative">
+                            <select name="modelo_id" id="modeloSelect" required
+                                class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-base appearance-none">
+                                <option value="" disabled <%=!peca ? 'selected' : '' %>>Selecione na lista...</option>
+                                <% modelos.forEach(m=> { %>
+                                    <option value="<%= m.id %>" <%=(peca && peca.modelo_id===m.id) ? 'selected' : '' %>>
+                                        <%= m.nome %>
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-700">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20">
+                                    <path
+                                        d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Código (#) *</label>
-                    <input type="text" name="codigo_exibicao" id="codExibicao" required 
-                           value="<%= peca ? peca.codigo_exibicao : '' %>"
-                           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-mono font-bold text-amber-600 bg-gray-50 text-lg">
-                </div>
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Código (#)
+                            *</label>
+                        <input type="text" name="codigo_exibicao" id="codExibicao" required
+                            value="<%= peca ? peca.codigo_exibicao : '' %>"
+                            class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-mono font-bold text-amber-600 bg-gray-50 text-lg">
+                    </div>
 
-                <div class="lg:col-span-2">
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Inscrição na Base (Destaque)</label>
-                    <input type="text" name="inscricao_base" value="<%= peca ? peca.inscricao_base : '' %>" 
-                           placeholder="Ex: Protegei a Alicia" maxlength="40"
-                           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-bold text-gray-800 text-lg">
-                    <p class="text-xs text-gray-500 mt-2">Este texto aparecerá em destaque na lista do celular.</p>
-                </div>
+                    <% if (!peca) { %>
+                        <div class="lg:col-span-2 bg-amber-50 p-4 rounded-lg border border-amber-200">
+                            <label
+                                class="block text-amber-800 font-bold mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                </svg>
+                                Chave de Acesso (Impresso na Peça)
+                            </label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <select name="chave_acesso"
+                                        class="w-full p-3 border border-amber-300 rounded focus:outline-none focus:border-amber-600 bg-white font-mono text-amber-900">
+                                        <option value="">-- Gerar Nova Automaticamente --</option>
+                                        <% if (locals.chavesReserva) { %>
+                                            <% chavesReserva.forEach(k=> { %>
+                                                <option value="<%= k.chave %>">
+                                                    <%= k.chave %> (Pré-gerada)
+                                                </option>
+                                                <% }) %>
+                                                    <% } %>
+                                    </select>
+                                    <p class="text-xs text-amber-700 mt-1">Selecione a chave que foi impressa na peça,
+                                        ou deixe em branco para gerar uma nova agora.</p>
+                                </div>
+                                <div class="flex items-center text-sm text-amber-800 italic">
+                                    <p>Se você já imprimiu a peça com uma chave da lista do Dashboard, selecione-a aqui
+                                        para vincular.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <% } else { %>
+                            <div class="lg:col-span-2">
+                                <label class="block text-gray-400 font-bold mb-2 text-sm uppercase tracking-wide">Chave
+                                    de Acesso (Fixo)</label>
+                                <input type="text" disabled value="<%= peca.chave_acesso %>"
+                                    class="w-full p-2 bg-gray-100 border border-gray-200 rounded text-gray-500 font-mono">
+                            </div>
+                            <% } %>
 
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Tamanho</label>
-                    <input type="text" name="tamanho" value="<%= peca ? peca.tamanho : '20cm' %>" 
-                           class="w-full p-4 border border-gray-300 rounded-lg text-base">
-                </div>
+                                <div class="lg:col-span-2">
+                                    <label
+                                        class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Inscrição
+                                        na Base (Destaque)</label>
+                                    <input type="text" name="inscricao_base"
+                                        value="<%= peca ? peca.inscricao_base : '' %>"
+                                        placeholder="Ex: Protegei a Alicia" maxlength="40"
+                                        class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-bold text-gray-800 text-lg">
+                                    <p class="text-xs text-gray-500 mt-2">Este texto aparecerá em destaque na lista do
+                                        celular.</p>
+                                </div>
 
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Material</label>
-                    <input type="text" name="material" value="<%= peca ? peca.material : 'Compósito Ecológico' %>" class="w-full p-4 border border-gray-300 rounded-lg text-base">
-                </div>
+                                <div>
+                                    <label
+                                        class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Tamanho</label>
+                                    <input type="text" name="tamanho" value="<%= peca ? peca.tamanho : '20cm' %>"
+                                        class="w-full p-4 border border-gray-300 rounded-lg text-base">
+                                </div>
 
-                <div class="lg:col-span-2">
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Acabamento</label>
-                    <input type="text" name="acabamento" value="<%= peca ? peca.acabamento : 'Visual Mármore, sobre pedestal preto' %>" class="w-full p-4 border border-gray-300 rounded-lg text-base">
-                </div>
+                                <div>
+                                    <label
+                                        class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Material</label>
+                                    <input type="text" name="material"
+                                        value="<%= peca ? peca.material : 'Compósito Ecológico' %>"
+                                        class="w-full p-4 border border-gray-300 rounded-lg text-base">
+                                </div>
 
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Data de Produção</label>
-                    <input type="month" name="data_producao" required
-                           value="<%= peca ? peca.data_producao : '' %>" 
-                           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-base">
-                    <p class="text-xs text-gray-500 mt-2">Selecione Mês e Ano.</p>
+                                <div class="lg:col-span-2">
+                                    <label
+                                        class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Acabamento</label>
+                                    <input type="text" name="acabamento"
+                                        value="<%= peca ? peca.acabamento : 'Visual Mármore, sobre pedestal preto' %>"
+                                        class="w-full p-4 border border-gray-300 rounded-lg text-base">
+                                </div>
+
+                                <div>
+                                    <label
+                                        class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Data
+                                        de Produção</label>
+                                    <input type="month" name="data_producao" required
+                                        value="<%= peca ? peca.data_producao : '' %>"
+                                        class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 bg-white text-base">
+                                    <p class="text-xs text-gray-500 mt-2">Selecione Mês e Ano.</p>
+                                </div>
                 </div>
             </div>
-        </div>
 
-        <div>
-            <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
-                <span class="bg-amber-100 text-amber-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</span>
-                Dados do Presente
-            </h3>
-            
-            <div class="space-y-6">
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Nome do Cliente (Comprador)</label>
-                    <input type="text" name="cliente_nome" value="<%= peca ? peca.cliente_nome : '' %>" 
-                           placeholder="Ex: Pedro Knob" class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 text-base">
-                </div>
+            <div>
+                <h3 class="text-lg font-bold text-gray-800 mb-6 flex items-center gap-2">
+                    <span
+                        class="bg-amber-100 text-amber-800 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">2</span>
+                    Dados do Presente
+                </h3>
 
-                <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Dedicatória Completa</label>
-                    <textarea name="mensagem" rows="5" 
-                              class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-serif italic text-lg leading-relaxed"
-                              placeholder="Cole o texto completo da dedicatória aqui..."><%= peca ? peca.mensagem : '' %></textarea>
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Nome do
+                            Cliente (Comprador)</label>
+                        <input type="text" name="cliente_nome" value="<%= peca ? peca.cliente_nome : '' %>"
+                            placeholder="Ex: Pedro Knob"
+                            class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 text-base">
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Dedicatória
+                            Completa</label>
+                        <textarea name="mensagem" rows="5"
+                            class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-serif italic text-lg leading-relaxed"
+                            placeholder="Cole o texto completo da dedicatória aqui..."><%= peca ? peca.mensagem : '' %></textarea>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="pt-6">
-            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-5 rounded-xl shadow-lg text-xl transition transform active:scale-95">
-                <%= peca ? 'Salvar Alterações' : 'Registrar Peça' %>
-            </button>
-        </div>
-    </form>
-
-    <% if (peca) { %>
-        <div class="mt-12 pt-6 border-t border-gray-200 text-center">
-            <form action="/admin/pecas/<%= peca.id %>/delete" method="POST" onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir esta peça?');">
-                <button type="submit" class="text-red-500 hover:text-red-700 underline text-sm py-4">
-                    Excluir registro permanentemente
+            <div class="pt-6">
+                <button type="submit"
+                    class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-5 rounded-xl shadow-lg text-xl transition transform active:scale-95">
+                    <%= peca ? 'Salvar Alterações' : 'Registrar Peça' %>
                 </button>
-            </form>
-        </div>
-    <% } %>
+            </div>
+        </form>
 
-</div>
+        <% if (peca) { %>
+            <div class="mt-12 pt-6 border-t border-gray-200 text-center">
+                <form action="/admin/pecas/<%= peca.id %>/delete" method="POST"
+                    onsubmit="return confirm('ATENÇÃO: Tem certeza que deseja excluir esta peça?');">
+                    <button type="submit" class="text-red-500 hover:text-red-700 underline text-sm py-4">
+                        Excluir registro permanentemente
+                    </button>
+                </form>
+            </div>
+            <% } %>
 
-<% if (!peca) { %>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const select = document.getElementById('modeloSelect');
-        const inputExibicao = document.getElementById('codExibicao');
-        select.addEventListener('change', () => {
-            if(select.value) inputExibicao.placeholder = "Digite o código...";
-        });
-    });
-</script>
-<% } %>
+    </div>
 
-<%- include('../layouts/layout-bottom') %>
+    <% if (!peca) { %>
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const select = document.getElementById('modeloSelect');
+                const inputExibicao = document.getElementById('codExibicao');
+                select.addEventListener('change', () => {
+                    if (select.value) inputExibicao.placeholder = "Digite o código...";
+                });
+            });
+        </script>
+        <% } %>
+
+            <%- include('../layouts/layout-bottom') %>

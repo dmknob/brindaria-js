@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const slugify = require('slugify');
+const { ensureReserveKeys, generateUniqueKey } = require('../utils/keyGenerator');
 
 // --- FUNÇÕES AUXILIARES ---
 
@@ -13,13 +14,13 @@ const downloadImage = (url, filename) => {
     return new Promise((resolve, reject) => {
         // Garante que o diretório existe
         const dir = path.join(__dirname, '../../public/uploads/modelos');
-        if (!fs.existsSync(dir)){
+        if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
 
         const filepath = path.join(dir, filename);
         const file = fs.createWriteStream(filepath);
-        
+
         https.get(url, (response) => {
             if (response.statusCode !== 200) {
                 return reject(new Error(`Falha ao baixar: Status ${response.statusCode}`));
@@ -29,14 +30,14 @@ const downloadImage = (url, filename) => {
                 file.close(() => resolve(`/uploads/modelos/${filename}`));
             });
         }).on('error', (err) => {
-            fs.unlink(filepath, () => {}); // Apaga arquivo corrompido se der erro
+            fs.unlink(filepath, () => { }); // Apaga arquivo corrompido se der erro
             reject(err);
         });
     });
 };
 
 module.exports = {
-    
+
     // =========================================
     // AUTENTICAÇÃO
     // =========================================
@@ -81,11 +82,15 @@ module.exports = {
             ORDER BY p.id DESC LIMIT 5
         `).all();
 
-        res.render('admin/dashboard', { 
-            title: 'Painel Admin', 
-            totalPecas, 
+        // Garante e busca chaves de reserva
+        const chavesReserva = ensureReserveKeys(db, 10);
+
+        res.render('admin/dashboard', {
+            title: 'Painel Admin',
+            totalPecas,
             totalModelos,
-            ultimasVendas 
+            ultimasVendas,
+            chavesReserva
         });
     },
 
@@ -95,16 +100,16 @@ module.exports = {
 
     getCategorias: (req, res) => {
         const categorias = db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all();
-        
+
         // Conta quantos modelos existem em cada categoria (para info visual)
         const contagem = db.prepare('SELECT categoria_id, COUNT(*) as total FROM modelos GROUP BY categoria_id').all();
         const mapContagem = {};
         contagem.forEach(c => mapContagem[c.categoria_id] = c.total);
 
-        res.render('admin/categorias', { 
-            title: 'Categorias', 
+        res.render('admin/categorias', {
+            title: 'Categorias',
             categorias,
-            mapContagem 
+            mapContagem
         });
     },
 
@@ -160,8 +165,8 @@ module.exports = {
     // Formulário de Criação
     getNovoModelo: (req, res) => {
         const categorias = db.prepare('SELECT * FROM categorias').all();
-        res.render('admin/form-modelo', { 
-            title: 'Novo Modelo', 
+        res.render('admin/form-modelo', {
+            title: 'Novo Modelo',
             categorias,
             modelo: null // null indica que é cadastro novo
         });
@@ -169,13 +174,13 @@ module.exports = {
 
     // Processar Criação (POST)
     postNovoModelo: async (req, res) => {
-        const { 
-            nome, categoria_id, subtitulo, colecao, 
+        const {
+            nome, categoria_id, subtitulo, colecao,
             conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
-            historia, oracao, detalhes_visuais, 
+            historia, oracao, detalhes_visuais,
             imagem_url_externa, imagem_arquivo_manual, slug
         } = req.body;
-        
+
         // Usa o slug do form, ou gera do nome se estiver vazio. Limpa caracteres inválidos.
         const finalSlug = slugify(slug || nome, { lower: true, strict: true });
 
@@ -198,13 +203,13 @@ module.exports = {
                     historia, oracao, detalhes_visuais
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
-            
+
             insert.run(
                 categoria_id, nome, slug, subtitulo, colecao, finalImagePath,
                 conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
                 historia, oracao, detalhes_visuais
             );
-            
+
             res.redirect('/admin/modelos');
         } catch (err) {
             console.error(err);
@@ -230,10 +235,10 @@ module.exports = {
     // Processar Edição (POST)
     postEditarModelo: async (req, res) => {
         const { id } = req.params;
-        const { 
-            nome, categoria_id, subtitulo, colecao, 
+        const {
+            nome, categoria_id, subtitulo, colecao,
             conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
-            historia, oracao, detalhes_visuais, 
+            historia, oracao, detalhes_visuais,
             imagem_url_externa, imagem_arquivo_manual,
             slug // <--- Recebe do form
         } = req.body;
@@ -256,7 +261,7 @@ module.exports = {
                 const ext = path.extname(imagem_url_externa.split('?')[0]) || '.jpg';
                 const filename = `${currentSlug}${ext}`;
                 const localImagePath = await downloadImage(imagem_url_externa, filename);
-                
+
                 imageSqlFragment = ", imagem_url = ?";
                 params.push(localImagePath);
 
@@ -277,7 +282,7 @@ module.exports = {
                     ${imageSqlFragment}
                 WHERE id = ?
             `);
-            
+
             update.run(...params);
             res.redirect('/admin/modelos');
 
@@ -343,33 +348,54 @@ module.exports = {
 
     getNovaPeca: (req, res) => {
         const modelos = db.prepare('SELECT id, nome FROM modelos ORDER BY nome').all();
-        res.render('admin/form-peca', { title: 'Registrar Peça', modelos, peca: null });
+        // Busca chaves de reserva para o dropdown
+        const chavesReserva = ensureReserveKeys(db, 10);
+        res.render('admin/form-peca', { title: 'Registrar Peça', modelos, peca: null, chavesReserva });
     },
 
     postNovaPeca: (req, res) => {
-        // Adicione data_producao na extração do body
-        const { 
-            modelo_id, codigo_exibicao, codigo_sequencial, 
+        const {
+            modelo_id, codigo_exibicao,
             inscricao_base, tamanho, material, acabamento,
-            cliente_nome, mensagem, data_producao 
+            cliente_nome, mensagem, data_producao,
+            chave_acesso
         } = req.body;
-        
+
         try {
+            // Calcula o sequencial removendo caracteres não numéricos
+            const codigo_sequencial = parseInt(codigo_exibicao.replace(/\D/g, ''), 10) || 0;
+
+            let finalKey = chave_acesso;
+
+            // Se o usuário não escolheu uma chave (ex: digitou manualmente ou deixou vazio), gera uma nova
+            // Mas se ele escolheu uma da lista (que vem no body), usamos ela.
+            // O form deve enviar a chave escolhida.
+
+            // Verifica se a chave existe na tabela de reserva e a remove de lá
+            if (finalKey) {
+                const inReserva = db.prepare('SELECT id FROM chaves_reserva WHERE chave = ?').get(finalKey);
+                if (inReserva) {
+                    db.prepare('DELETE FROM chaves_reserva WHERE id = ?').run(inReserva.id);
+                }
+            } else {
+                // Se não veio chave (improvável se o form for obrigatório), gera uma na hora
+                finalKey = generateUniqueKey(db);
+            }
+
             const insert = db.prepare(`
                 INSERT INTO pecas (
-                    modelo_id, codigo_sequencial, codigo_exibicao, 
+                    modelo_id, codigo_sequencial, codigo_exibicao,
                     inscricao_base, tamanho, material, acabamento,
-                    cliente_nome, mensagem, data_producao
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    cliente_nome, mensagem, data_producao, chave_acesso
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
-            
-            // Removemos a geração automática de data. Usamos a variável data_producao direto.
+
             insert.run(
                 modelo_id, codigo_sequencial, codigo_exibicao,
                 inscricao_base, tamanho, material, acabamento,
-                cliente_nome, mensagem, data_producao
+                cliente_nome, mensagem, data_producao, finalKey
             );
-            
+
             res.redirect('/admin/pecas');
         } catch (err) {
             console.error(err);
@@ -378,7 +404,7 @@ module.exports = {
     },
 
     // --- EDIÇÃO DE PEÇAS ---
-    
+
     getEditarPeca: (req, res) => {
         const { id } = req.params;
         const peca = db.prepare('SELECT * FROM pecas WHERE id = ?').get(id);
@@ -389,34 +415,36 @@ module.exports = {
         res.render('admin/form-peca', {
             title: `Editar Peça #${peca.codigo_exibicao}`,
             modelos,
-            peca // Passamos a peça para preencher o form
+            peca, // Passamos a peça para preencher o form
+            chavesReserva: [] // Não precisa de chaves novas na edição
         });
     },
 
     postEditarPeca: (req, res) => {
         const { id } = req.params;
-        // Adicione data_producao aqui
-        const { 
-            modelo_id, codigo_exibicao, inscricao_base, 
-            tamanho, material, acabamento, cliente_nome, mensagem, data_producao 
+        const {
+            modelo_id, codigo_exibicao, inscricao_base,
+            tamanho, material, acabamento, cliente_nome, mensagem, data_producao
         } = req.body;
 
         try {
+            // Calcula o sequencial removendo caracteres não numéricos
+            const codigo_sequencial = parseInt(codigo_exibicao.replace(/\D/g, ''), 10) || 0;
+
             const update = db.prepare(`
                 UPDATE pecas SET 
-                    modelo_id = ?, codigo_exibicao = ?, inscricao_base = ?,
+                    modelo_id = ?, codigo_exibicao = ?, codigo_sequencial = ?, inscricao_base = ?,
                     tamanho = ?, material = ?, acabamento = ?,
                     cliente_nome = ?, mensagem = ?, data_producao = ?
                 WHERE id = ?
             `);
-            
-            // Adicione data_producao nos parâmetros (antes do ID)
+
             update.run(
-                modelo_id, codigo_exibicao, inscricao_base,
+                modelo_id, codigo_exibicao, codigo_sequencial, inscricao_base,
                 tamanho, material, acabamento, cliente_nome, mensagem, data_producao,
                 id
             );
-            
+
             res.redirect('/admin/pecas');
         } catch (err) {
             console.error(err);

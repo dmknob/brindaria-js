@@ -1,0 +1,60 @@
+<%- include('../layouts/layout-top') %>
+
+    <article class="bg-gray-50 min-h-screen py-12 px-4">
+        <div class="max-w-3xl mx-auto">
+
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-serif font-bold text-gray-900 mb-4">Encontramos mais de uma peça</h1>
+                <p class="text-gray-600 text-lg">
+                    O código <strong>#<%= codigo %></strong> foi utilizado em diferentes modelos no passado.
+                    <br>Por favor, indique qual é a sua peça abaixo:
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <% pecas.forEach(peca=> { %>
+                    <a href="/pecas/espiritual/<%= peca.modelo_slug %>/<%= peca.codigo_exibicao %>#certificado"
+                        class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-gray-200 group flex flex-col">
+
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="<%= peca.imagem_url || '/images/placeholder.jpg' %>" alt="<%= peca.modelo_nome %>"
+                                class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60">
+                            </div>
+                            <div class="absolute bottom-4 left-4 text-white">
+                                <span
+                                    class="text-xs font-bold uppercase tracking-wider bg-cyan-600 px-2 py-1 rounded">Peça
+                                    <%= peca.codigo_exibicao %></span>
+                            </div>
+                        </div>
+
+                        <div class="p-6 flex-1 flex flex-col justify-between">
+                            <div>
+                                <h2
+                                    class="font-serif font-bold text-xl text-gray-900 mb-2 group-hover:text-cyan-700 transition">
+                                    <%= peca.modelo_nome %>
+                                </h2>
+                                <% if (peca.inscricao_base) { %>
+                                    <p class="text-sm text-gray-500 italic mb-4">"<%= peca.inscricao_base %>"</p>
+                                    <% } else { %>
+                                        <p class="text-sm text-gray-400 italic mb-4">Sem inscrição na base</p>
+                                        <% } %>
+                            </div>
+
+                            <div class="flex items-center text-cyan-600 font-bold text-sm mt-4">
+                                É esta a minha peça &rarr;
+                            </div>
+                        </div>
+                    </a>
+                    <% }) %>
+            </div>
+
+            <div class="mt-12 text-center">
+                <a href="/" class="text-gray-500 hover:text-gray-700 underline text-sm">Não encontrou? Voltar para o
+                    início</a>
+            </div>
+
+        </div>
+    </article>
+
+    <%- include('../layouts/layout-bottom') %>

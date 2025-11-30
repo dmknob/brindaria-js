@@ -1,114 +1,152 @@
 <%- include('../layouts/layout-top', { hideHeader: true }) %>
 
-<div class="max-w-4xl mx-auto px-6 py-8 md:py-12 font-sans text-gray-800">
+    <div class="max-w-4xl mx-auto px-6 py-8 md:py-12 font-sans text-gray-800">
 
-    <header class="text-center mb-8">
-        <p class="text-2xl md:text-3xl text-black lowercase mb-6 font-medium tracking-wider">
-            brindaria.com.br
-        </p>
-
-        <nav class="flex flex-wrap justify-center items-center gap-6 text-sm font-semibold text-gray-500 uppercase tracking-wide relative z-50">
-            <a href="/" class="text-cyan-600 border-b-2 border-cyan-600 pb-1">Início</a>
-            
-            <a href="/pecas" class="hover:text-cyan-600 transition border-b-2 border-transparent hover:border-cyan-600 pb-1">
-                Nossas Peças
-            </a>
-
-            <a href="/contato" class="hover:text-cyan-600 transition border-b-2 border-transparent hover:border-cyan-600 pb-1">
-                Contato
-            </a>
-            
-            <% if (locals.isAdmin) { %>
-                <a href="/admin/dashboard" class="text-amber-600 hover:text-amber-800 transition pb-1">[Admin]</a>
-            <% } %>
-        </nav>
-    </header>
-
-    <div class="mb-10 flex justify-center w-full">
-        <img src="/images/FOTO_FAMILIA.webp"  alt="Família Brindaria no Santuário de Aparecida" 
-             class="rounded-lg shadow-xl w-full h-auto max-w-2xl object-contain"
-             fetchpriority="high">
-    </div>
-
-    <hr class="my-10 border-t border-gray-200">
-
-    <section class="text-center mb-12">
-        <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Nós somos a Brindaria.
-        </h1>
-        <p class="text-xl text-gray-600 font-medium">
-            Brindaria: Espiritualidade e Respeito.
-        </p>
-    </section>
-
-    <section id="historia" class="text-lg leading-relaxed text-gray-700 space-y-6 text-justify md:text-left">
-        <p>
-            Olá! Nós somos o <strong>Leandro Gabriel</strong> e a <strong>Ana Cristina</strong>. Junto com os nossos filhos (Ana Sofia, Pedro José e Otávio José),
-            estamos começando a nossa jornada por trás da Brindaria, uma pequena empresa familiar.
-        </p>
-        <p>
-            A nossa missão é criar peças únicas e personalizadas, com foco em <strong>Arte Espiritual</strong> e itens de devoção. Na
-            Brindaria, acreditamos que a fé é uma jornada pessoal e que o respeito à diversidade de crenças é o caminho para a paz.
-        </p>
-        <p>
-            Como viajantes e peregrinos, percebemos o quanto é difícil encontrar imagens que representem conexões espirituais menos
-            comuns. A nossa especialidade é esta: <strong>unir a sua identidade ao sagrado</strong>, criando a imagem da figura de devoção ligada ao seu nome ou à sua história.
-        </p>
-        
-        <div class="bg-indigo-50 p-6 rounded-lg border-l-4 border-indigo-500 shadow-sm my-8">
-            <h3 class="font-bold text-indigo-900 text-lg mb-2">
-                Você sabia que pode existir um santo ou guia espiritual com o seu nome?
-            </h3>
-            <p class="text-indigo-800">
-                Nós fazemos a pesquisa e a curadoria para encontrar a história e a imagem dessas figuras (contanto que existam),
-                transformando a sua fé — seja ela qual for — numa peça única.
+        <header class="text-center mb-8">
+            <p class="text-2xl md:text-3xl text-black lowercase mb-6 font-medium tracking-wider">
+                brindaria.com.br
             </p>
+
+            <nav
+                class="flex flex-wrap justify-center items-center gap-6 text-sm font-semibold text-gray-500 uppercase tracking-wide relative z-50">
+                <a href="/" class="text-cyan-600 border-b-2 border-cyan-600 pb-1">Início</a>
+
+                <a href="/pecas"
+                    class="hover:text-cyan-600 transition border-b-2 border-transparent hover:border-cyan-600 pb-1">
+                    Nossas Peças
+                </a>
+
+                <a href="/contato"
+                    class="hover:text-cyan-600 transition border-b-2 border-transparent hover:border-cyan-600 pb-1">
+                    Contato
+                </a>
+
+                <% if (locals.isAdmin) { %>
+                    <a href="/admin/dashboard" class="text-amber-600 hover:text-amber-800 transition pb-1">[Admin]</a>
+                    <% } %>
+            </nav>
+        </header>
+
+        <div class="mb-10 flex justify-center w-full">
+            <img src="/images/FOTO_FAMILIA.webp" alt="Família Brindaria no Santuário de Aparecida"
+                class="rounded-lg shadow-xl w-full h-auto max-w-2xl object-contain" fetchpriority="high">
         </div>
-    </section>
 
-    <hr class="my-12 border-t border-gray-200">
+        <!-- Seção de Busca Prominente -->
+        <section class="max-w-xl mx-auto bg-cyan-50 p-8 rounded-xl border border-cyan-100 shadow-sm text-center mb-12">
+            <h2 class="text-xl font-bold text-cyan-900 mb-2">Já possui uma peça Brindaria?</h2>
+            <p class="text-cyan-700 mb-6 text-sm">Digite a Chave de Acesso (5 letras) ou o Código gravado na base para
+                ver o certificado.</p>
 
-    <section id="atelie" class="text-center mb-16">
-        <h2 class="text-3xl font-bold text-gray-900 mb-8">O Nosso Ateliê</h2>
-        
-        <div class="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
-            <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto font-serif italic">
-                "É aqui que a devoção ganha forma."
+            <form action="/validar" method="POST" class="flex flex-col md:flex-row gap-2">
+                <input type="text" name="codigo" placeholder="Ex: A1B2C ou 001"
+                    class="w-full md:flex-1 p-3 border border-cyan-200 rounded-lg focus:outline-none focus:border-cyan-600 font-mono uppercase text-center text-lg"
+                    required>
+                <button type="submit"
+                    class="w-full md:w-auto bg-cyan-700 hover:bg-cyan-800 text-white font-bold py-3 px-6 rounded-lg transition shadow">
+                    Verificar
+                </button>
+            </form>
+        </section>
+
+        <hr class="my-10 border-t border-gray-200">
+
+        <section class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Nós somos a Brindaria.
+            </h1>
+            <p class="text-xl text-gray-600 font-medium">
+                Brindaria: Espiritualidade e Respeito.
             </p>
-            
-            <div class="max-w-md mx-auto">
-                <img src="/images/ATELIE_001.jpg" 
-                     alt="Protótipo do Anjo da Guarda no ateliê da Brindaria" 
-                     class="w-full h-auto object-cover rounded-lg shadow-lg border-4 border-white"
-                     loading="lazy">
+        </section>
+
+        <section id="historia" class="text-lg leading-relaxed text-gray-700 space-y-6 text-justify md:text-left">
+            <p>
+                Olá! Nós somos o <strong>Leandro Gabriel</strong> e a <strong>Ana Cristina</strong>. Junto com os nossos
+                filhos (Ana Sofia, Pedro José e Otávio José),
+                estamos começando a nossa jornada por trás da Brindaria, uma pequena empresa familiar.
+            </p>
+            <p>
+                A nossa missão é criar peças únicas e personalizadas, com foco em <strong>Arte Espiritual</strong> e
+                itens de devoção. Na
+                Brindaria, acreditamos que a fé é uma jornada pessoal e que o respeito à diversidade de crenças é o
+                caminho para a paz.
+            </p>
+            <p>
+                Como viajantes e peregrinos, percebemos o quanto é difícil encontrar imagens que representem conexões
+                espirituais menos
+                comuns. A nossa especialidade é esta: <strong>unir a sua identidade ao sagrado</strong>, criando a
+                imagem da figura de devoção ligada ao seu nome ou à sua história.
+            </p>
+
+            <div class="bg-indigo-50 p-6 rounded-lg border-l-4 border-indigo-500 shadow-sm my-8">
+                <h3 class="font-bold text-indigo-900 text-lg mb-2">
+                    Você sabia que pode existir um santo ou guia espiritual com o seu nome?
+                </h3>
+                <p class="text-indigo-800">
+                    Nós fazemos a pesquisa e a curadoria para encontrar a história e a imagem dessas figuras (contanto
+                    que existam),
+                    transformando a sua fé — seja ela qual for — numa peça única.
+                </p>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <footer id="contato" class="text-center pb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Vamos conversar?</h2>
-        
-        <div class="max-w-2xl mx-auto text-lg text-gray-700 space-y-4 mb-10">
-            <p>Enquanto o nosso site completo não fica pronto, o nosso canal de atendimento direto já está funcionando.</p>
-            <p>Adoraríamos ouvir a sua sugestão ou ideia! Chame no WhatsApp abaixo. Você será atendido(a) pela <strong>Ana Cristina</strong> ou por um de nós da família.</p>
-        </div>
-        
-        <a href="https://wa.me/5551996374776?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Brindaria." 
-           target="_blank" 
-           class="inline-flex items-center justify-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xl py-4 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl gap-3 mb-8">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.521.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
-            </svg>
-            Falar com a Família pelo WhatsApp
-        </a>
+        <hr class="my-12 border-t border-gray-200">
 
-        <div class="flex justify-center gap-6 text-gray-400">
-            <a href="https://instagram.com/brindaria.oficial" target="_blank" class="hover:text-pink-600 transition" title="Instagram">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        <section id="atelie" class="text-center mb-16">
+            <h2 class="text-3xl font-bold text-gray-900 mb-8">O Nosso Ateliê</h2>
+
+            <div class="bg-gray-50 p-6 md:p-8 rounded-xl shadow-sm border border-gray-100">
+                <p class="text-lg text-gray-700 mb-8 max-w-2xl mx-auto font-serif italic">
+                    "É aqui que a devoção ganha forma."
+                </p>
+
+                <div class="max-w-md mx-auto">
+                    <img src="/images/ATELIE_001.jpg" alt="Protótipo do Anjo da Guarda no ateliê da Brindaria"
+                        class="w-full h-auto object-cover rounded-lg shadow-lg border-4 border-white" loading="lazy">
+                </div>
+            </div>
+        </section>
+
+        <footer id="contato" class="text-center pb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">Vamos conversar?</h2>
+
+            <div class="max-w-2xl mx-auto text-lg text-gray-700 space-y-4 mb-10">
+                <p>Enquanto o nosso site completo não fica pronto, o nosso canal de atendimento direto já está
+                    funcionando.</p>
+                <p>Adoraríamos ouvir a sua sugestão ou ideia! Chame no WhatsApp abaixo. Você será atendido(a) pela
+                    <strong>Ana Cristina</strong> ou por um de nós da família.
+                </p>
+            </div>
+
+            <a href="https://wa.me/5551996374776?text=Ol%C3%A1!%20Vim%20pelo%20site%20da%20Brindaria." target="_blank"
+                class="inline-flex items-center justify-center bg-cyan-600 hover:bg-cyan-700 text-white font-bold text-xl py-4 px-8 rounded-full shadow-lg transition transform hover:-translate-y-1 hover:shadow-xl gap-3 mb-8">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.371-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.521.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                </svg>
+                Falar com a Família pelo WhatsApp
             </a>
-            <a href="https://facebook.com/brindaria" target="_blank" class="hover:text-blue-600 transition" title="Facebook">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-            </a>
-        </div>
-    </footer>
 
-<%- include('../layouts/layout-bottom', { hideFooter: true }) %>
+            <div class="flex justify-center gap-6 text-gray-400">
+                <a href="https://instagram.com/brindaria.oficial" target="_blank" class="hover:text-pink-600 transition"
+                    title="Instagram">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="https://facebook.com/brindaria" target="_blank" class="hover:text-blue-600 transition"
+                    title="Facebook">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                        fill="currentColor">
+                        <path
+                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                    </svg>
+                </a>
+            </div>
+        </footer>
+
+        <%- include('../layouts/layout-bottom', { hideFooter: true }) %>
