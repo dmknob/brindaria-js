@@ -8,7 +8,10 @@
     "start": "node app.js",
     "dev": "nodemon app.js",
     "build:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/styles.css --minify",
-    "watch:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/styles.css --watch"
+    "watch:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/styles.css --watch",
+    "db:setup": "node setup-db.js",
+    "db:dump": "node scripts/dump-db.js",
+    "db:restore": "node scripts/restore-db.js"
   },
   "dependencies": {
     "archiver": "^7.0.1",

@@ -8,6 +8,9 @@ node_modules/
 *.db-wal
 *.sqlite
 
+# Dados Sensíveis (Dump)
+database/seeds/*.json
+
 # Uploads e Logs
 public/uploads/*
 npm-debug.log
