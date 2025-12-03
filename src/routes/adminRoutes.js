@@ -1,9 +1,10 @@
 // src/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const adminController = require('../controllers/adminController');
 const { isAuthenticated } = require('../middleware/auth');
-const rateLimit = require('express-rate-limit');
+const systemController = require('../controllers/systemController');
 
 // --- SEGURANÇA: Limitador de Tentativas (Brute Force) ---
 const loginLimiter = rateLimit({
@@ -61,6 +62,9 @@ router.get('/pecas/:id/editar', adminController.getEditarPeca);
 router.post('/pecas/:id/editar', adminController.postEditarPeca);
 router.post('/pecas/:id/delete', adminController.postDeletarPeca); // Rota de Exclusão
 
+// --- CONFIGURAÇÕES DO SISTEMA ---
+router.get('/sistema', systemController.getIndex);
+router.get('/sistema/backup', systemController.downloadBackup);
 //  ####################################################
 
 module.exports = router;

@@ -11,6 +11,7 @@
     "watch:css": "tailwindcss -i ./src/styles/input.css -o ./public/css/styles.css --watch"
   },
   "dependencies": {
+    "archiver": "^7.0.1",
     "better-sqlite3": "^9.0.0",
     "compression": "^1.7.4",
     "dotenv": "^16.3.1",

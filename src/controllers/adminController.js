@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const slugify = require('slugify');
+const systemController = require('../controllers/systemController');
 const { ensureReserveKeys, generateUniqueKey } = require('../utils/keyGenerator');
 
 // --- FUNÇÕES AUXILIARES ---
