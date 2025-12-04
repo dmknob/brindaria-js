@@ -122,7 +122,7 @@ const publicController = {
 
         const peca = {
             id: dados.id, codigo_exibicao: dados.codigo_exibicao || 'PENDENTE',
-            inscricao_base: dados.inscricao_base, tamanho: dados.tamanho,
+            chave_acesso: dados.chave_acesso,inscricao_base: dados.inscricao_base, tamanho: dados.tamanho,
             material: dados.material, acabamento: dados.acabamento,
             data_producao: dados.data_producao, mensagem: dados.mensagem, cliente_nome: dados.cliente_nome
         };

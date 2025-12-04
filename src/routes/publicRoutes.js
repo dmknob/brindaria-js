@@ -13,6 +13,10 @@ router.get('/pecas', publicController.getCatalogo);
 // Rota para Sitemap XML
 router.get('/sitemap.xml', publicController.getSitemap);
 
+// 1. Acesso Direto por Chave (Rota Curta do QR Code)
+// Ex: brindaria.com.br/v/K6RS9
+router.get('/v/:chave', publicController.getPecaByKey);
+
 // Rota Curta para Compartilhamento (Redirecionador Inteligente)
 // ex: brindaria.com.br/v/anjo-da-guarda/001 -> Redireciona para a URL longa canônica
 router.get('/v/:slug/:codigo', (req, res) => {
