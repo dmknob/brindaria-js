@@ -1,160 +1,105 @@
 <%- include('../layouts/layout-top') %>
 
-    <div class="max-w-5xl mx-auto py-8">
-
-        <div class="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-800">Painel Administrativo</h1>
-                <p class="text-sm text-gray-500">Bem-vindo(a) de volta.</p>
-            </div>
-            <div class="flex gap-3">
-                <a href="/admin/pecas/nova"
-                    class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded shadow transition text-sm flex items-center gap-2">
-                    <span>+</span> Nova Peça
-                </a>
-                <a href="/admin/modelos/novo"
-                    class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded shadow transition text-sm flex items-center gap-2">
-                    <span>+</span> Novo Modelo
-                </a>
-            </div>
+<div class="max-w-5xl mx-auto py-8 px-4">
+    
+    <!-- Cabeçalho -->
+    <div class="flex justify-between items-center mb-8 border-b border-gray-200 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Painel Administrativo</h1>
+            <p class="text-sm text-gray-500">Bem-vindo(a) de volta.</p>
         </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-
-            <a href="/admin/pecas"
-                class="block bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition border-l-4 border-l-amber-500 group">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3 class="text-gray-500 uppercase text-xs font-bold tracking-wider group-hover:text-amber-600">
-                            Peças Produzidas</h3>
-                        <p class="text-3xl font-bold text-gray-800 mt-1">
-                            <%= totalPecas %>
-                        </p>
-                    </div>
-                    <div class="text-gray-300 group-hover:text-amber-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 mt-4">Clique para ver o histórico</p>
+        <!-- Ações Rápidas -->
+        <div class="flex gap-3">
+            <a href="/admin/pecas/nova" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded shadow transition text-sm flex items-center gap-2">
+                <span>+</span> Nova Peça
             </a>
-
-            <a href="/admin/modelos"
-                class="block bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition border-l-4 border-l-indigo-500 group">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h3
-                            class="text-gray-500 uppercase text-xs font-bold tracking-wider group-hover:text-indigo-600">
-                            Modelos no Catálogo</h3>
-                        <p class="text-3xl font-bold text-gray-800 mt-1">
-                            <%= totalModelos %>
-                        </p>
-                    </div>
-                    <div class="text-gray-300 group-hover:text-indigo-500 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-xs text-gray-400 mt-4">Clique para editar histórias e fotos</p>
+            <a href="/admin/figuras/novo" class="bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 px-4 rounded shadow transition text-sm flex items-center gap-2">
+                <span>+</span> Nova Figura
             </a>
-
-        </div>
-
-        <!-- WIDGET DE CHAVES DE PRODUÇÃO -->
-        <div class="bg-gradient-to-r from-gray-800 to-gray-900 rounded-xl p-6 mb-10 text-white shadow-lg">
-            <div class="flex justify-between items-start mb-4">
-                <div>
-                    <h2 class="text-xl font-bold text-amber-400 flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
-                        </svg>
-                        Chaves para Produção
-                    </h2>
-                    <p class="text-gray-400 text-sm mt-1">Imprima estas chaves na base das peças. Elas já estão
-                        validadas.</p>
-                </div>
-                <div class="bg-gray-700 px-3 py-1 rounded text-xs font-mono text-gray-300">
-                    Próximas 10
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-                <% if (locals.chavesReserva && chavesReserva.length> 0) { %>
-                    <% chavesReserva.forEach(k=> { %>
-                        <div class="bg-white/10 border border-white/20 rounded-lg p-3 text-center hover:bg-white/20 transition group cursor-pointer"
-                            onclick="navigator.clipboard.writeText('<%= k.chave %>'); alert('Copiado: <%= k.chave %>')">
-                            <span
-                                class="block text-2xl font-mono font-bold tracking-widest text-white group-hover:text-amber-300">
-                                <%= k.chave %>
-                            </span>
-                            <span class="text-[10px] text-gray-400 uppercase tracking-wide">Clique p/ Copiar</span>
-                        </div>
-                        <% }) %>
-                            <% } else { %>
-                                <p class="col-span-full text-gray-500 italic">Nenhuma chave disponível no momento.</p>
-                                <% } %>
-            </div>
-        </div>
-
-        <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">Últimas Peças Registradas</h2>
-        <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200 overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cód</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Chave</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Modelo</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
-                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200">
-                    <% if (ultimasVendas.length===0) { %>
-                        <tr>
-                            <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma peça registrada
-                            <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma peça registrada
-                                ainda.</td>
-                        </tr>
-                        <% } %>
-
-                            <% ultimasVendas.forEach(peca=> { %>
-                                <tr class="hover:bg-gray-50 transition">
-                                    <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-bold text-amber-600">#
-                                        <%= peca.codigo_exibicao %>
-                                    </td>
-                                    <td
-                                        class="px-6 py-4 whitespace-nowrap font-mono text-xs text-gray-500 bg-gray-50 rounded">
-                                        <%= peca.chave_acesso %>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        <%= peca.modelo_nome %>
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <%= peca.cliente_nome || '-' %>
-                                    </td>
-
-                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="/admin/pecas/<%= peca.id %>/editar"
-                                            class="text-amber-600 hover:text-amber-900 mr-4 transition">Editar</a>
-
-                                        <a href="/pecas/espiritual/<%= peca.slug || 'modelo' %>/<%= peca.codigo_exibicao.replace('#', '') %>"
-                                            target="_blank"
-                                            class="text-indigo-600 hover:text-indigo-900 transition">Ver</a>
-                                    </td>
-                                </tr>
-                                <% }) %>
-                </tbody>
-            </table>
         </div>
     </div>
 
-    <%- include('../layouts/layout-bottom') %>
+    <!-- Cards de Visão Geral -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+        
+        <!-- Card PEÇAS -->
+        <a href="/admin/pecas" class="block bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition border-l-4 border-l-amber-500 group">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-500 uppercase text-xs font-bold tracking-wider group-hover:text-amber-600">Peças Produzidas</h3>
+                    <p class="text-3xl font-bold text-gray-800 mt-1"><%= totalPecas %></p>
+                </div>
+                <div class="text-gray-300 group-hover:text-amber-500 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" /></svg>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-4">Clique para ver o histórico</p>
+        </a>
+
+        <!-- Card FIGURAS -->
+        <a href="/admin/figuras" class="block bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition border-l-4 border-l-indigo-500 group">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-gray-500 uppercase text-xs font-bold tracking-wider group-hover:text-indigo-600">Figuras no Acervo</h3>
+                    <p class="text-3xl font-bold text-gray-800 mt-1"><%= totalFiguras %></p> 
+                </div>
+                <div class="text-gray-300 group-hover:text-indigo-500 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+                </div>
+            </div>
+            <p class="text-xs text-gray-400 mt-4">Clique para editar histórias e fotos</p>
+        </a>
+
+    </div>
+
+    <!-- Tabela de Últimas Vendas -->
+    <h2 class="text-lg font-bold mb-4 text-gray-700 border-b pb-2">Últimas Peças Registradas</h2>
+    <div class="bg-white rounded-lg shadow overflow-hidden border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cód</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Figura</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Cliente</th>
+                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Ações</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                <% if (ultimasVendas.length === 0) { %>
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma peça registrada ainda.</td>
+                    </tr>
+                <% } %>
+                <% ultimasVendas.forEach(peca => { %>
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-bold text-amber-600">
+                        <% if (peca.codigo_exibicao) { %>
+                            <%= peca.codigo_exibicao %>
+                        <% } else { %>
+                            <span class="text-gray-400 text-xs">PENDENTE</span>
+                        <% } %>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= peca.figura_nome %></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><%= peca.cliente_nome || '-' %></td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
+                        <a href="/admin/pecas/<%= peca.id %>/editar" class="text-amber-600 hover:text-amber-900 mr-4 transition">Editar</a>
+                        
+                        <!-- LÓGICA BLINDADA NO DASHBOARD TAMBÉM -->
+                        <% 
+                            let linkDash = '#';
+                            if (peca.codigo_exibicao) {
+                                linkDash = `/pecas/espiritual/${peca.slug}/${peca.codigo_exibicao.replace('#', '')}`;
+                            } else if (peca.chave_acesso) {
+                                linkDash = `/v/${peca.chave_acesso}`;
+                            }
+                        %>
+                        <a href="<%= linkDash %>" target="_blank" class="text-indigo-600 hover:text-indigo-900 font-medium">Ver</a>
+                    </td>
+                </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<%- include('../layouts/layout-bottom') %>

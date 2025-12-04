@@ -6,18 +6,18 @@
             <div class="text-center mb-12">
                 <h1 class="text-3xl font-serif font-bold text-gray-900 mb-4">Encontramos mais de uma peça</h1>
                 <p class="text-gray-600 text-lg">
-                    O código <strong>#<%= codigo %></strong> foi utilizado em diferentes modelos no passado.
+                    O código <strong>#<%= codigo %></strong> foi utilizado em diferentes figuras no passado.
                     <br>Por favor, indique qual é a sua peça abaixo:
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <% pecas.forEach(peca=> { %>
-                    <a href="/pecas/espiritual/<%= peca.modelo_slug %>/<%= peca.codigo_exibicao %>#certificado"
+                    <a href="/pecas/espiritual/<%= peca.figura_slug %>/<%= peca.codigo_exibicao %>#certificado"
                         class="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition border border-gray-200 group flex flex-col">
 
                         <div class="h-48 overflow-hidden relative">
-                            <img src="<%= peca.imagem_url || '/images/placeholder.jpg' %>" alt="<%= peca.modelo_nome %>"
+                            <img src="<%= peca.imagem_url || '/images/placeholder.jpg' %>" alt="<%= peca.figura_nome %>"
                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-60">
                             </div>
@@ -32,7 +32,7 @@
                             <div>
                                 <h2
                                     class="font-serif font-bold text-xl text-gray-900 mb-2 group-hover:text-cyan-700 transition">
-                                    <%= peca.modelo_nome %>
+                                    <%= peca.figura_nome %>
                                 </h2>
                                 <% if (peca.inscricao_base) { %>
                                     <p class="text-sm text-gray-500 italic mb-4">"<%= peca.inscricao_base %>"</p>

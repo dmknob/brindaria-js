@@ -6,22 +6,22 @@
         <div class="text-center mb-12">
             <h1 class="text-4xl font-serif font-bold text-gray-900 mb-4">Nossa Coleção</h1>
             <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                Cada modelo é fruto de intensa pesquisa histórica e teológica.
+                Cada figura é fruto de intensa pesquisa histórica e teológica.
                 Escolha uma imagem para conhecer sua história e significado.
             </p>
         </div>
 
-        <% if (modelos.length === 0) { %>
+        <% if (figuras.length === 0) { %>
             <div class="text-center py-12">
                 <p class="text-gray-500">Nosso acervo está sendo atualizado.</p>
             </div>
         <% } else { %>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <% modelos.forEach(modelo => { %>
-                    <a href="/pecas/espiritual/<%= modelo.slug %>" class="group block bg-white rounded-xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200">
+                <% figuras.forEach(figura => { %>
+                    <a href="/pecas/espiritual/<%= figura.slug %>" class="group block bg-white rounded-xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200">
                         <div class="relative h-72 w-full bg-gray-100 overflow-hidden">
-                            <img src="<%= modelo.imagem_url || '/images/placeholder.jpg' %>" 
-                                 alt="<%= modelo.nome %>" 
+                            <img src="<%= figura.imagem_url || '/images/placeholder.jpg' %>" 
+                                 alt="<%= figura.nome %>" 
                                  class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
                             
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
@@ -29,10 +29,10 @@
                         
                         <div class="p-6 text-center">
                             <h3 class="text-xl font-bold text-gray-900 font-serif mb-1 group-hover:text-amber-600 transition">
-                                <%= modelo.nome %>
+                                <%= figura.nome %>
                             </h3>
-                            <% if (modelo.subtitulo) { %>
-                                <p class="text-xs text-gray-500 uppercase tracking-wider mb-4"><%- modelo.subtitulo %></p>
+                            <% if (figura.subtitulo) { %>
+                                <p class="text-xs text-gray-500 uppercase tracking-wider mb-4"><%- figura.subtitulo %></p>
                             <% } %>
                             
                             <span class="inline-block text-sm font-bold text-amber-700 border-b border-amber-200 pb-0.5 group-hover:border-amber-600">

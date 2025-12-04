@@ -22,17 +22,17 @@
             </svg>
             <span class="text-sm font-bold text-gray-700">Filtrar:</span>
 
-            <select onchange="window.location.href='?modelo=' + this.value"
+            <select onchange="window.location.href='?figura=' + this.value"
                 class="p-2 border border-gray-300 rounded text-sm w-full md:w-64 focus:outline-none focus:border-amber-500">
                 <option value="">Todas as Peças</option>
-                <% modelos.forEach(m=> { %>
-                    <option value="<%= m.id %>" <%=filtroModelo==m.id ? 'selected' : '' %>>
+                <% figuras.forEach(m=> { %>
+                    <option value="<%= m.id %>" <%=filtroFigura==m.id ? 'selected' : '' %>>
                         <%= m.nome %>
                     </option>
                     <% }) %>
             </select>
 
-            <% if (filtroModelo) { %>
+            <% if (filtroFigura) { %>
                 <a href="/admin/pecas" class="text-xs text-red-600 hover:underline ml-2">Limpar Filtro</a>
                 <% } %>
         </div>
@@ -56,7 +56,7 @@
                                     </span>
                                     <span
                                         class="text-xs font-bold uppercase tracking-wide text-gray-500 bg-gray-100 px-2 py-0.5 rounded">
-                                        <%= p.modelo_nome %>
+                                        <%= p.figura_nome %>
                                     </span>
 
                                     <!-- Chave de Acesso -->
@@ -103,7 +103,7 @@
                                     Editar
                                 </a>
 
-                                <a href="/pecas/espiritual/<%= p.modelo_slug %>/<%= p.codigo_exibicao.replace('#','') %>"
+                                <a href="/pecas/espiritual/<%= p.figura_slug %>/<%= p.codigo_exibicao.replace('#','') %>"
                                     target="_blank"
                                     class="flex-none bg-gray-50 hover:bg-gray-100 text-gray-600 p-2 rounded transition border border-gray-200"
                                     title="Ver Página Pública">
@@ -122,12 +122,12 @@
         <% if (totalPages> 1) { %>
             <div class="mt-8 flex justify-center gap-2">
                 <% if (currentPage> 1) { %>
-                    <a href="?page=<%= currentPage - 1 %>&modelo=<%= filtroModelo %>"
+                    <a href="?page=<%= currentPage - 1 %>&figura=<%= filtroFigura %>"
                         class="px-4 py-2 border rounded bg-white hover:bg-gray-50">Anterior</a>
                     <% } %>
                         <span class="px-4 py-2 text-gray-500">Pág <%= currentPage %> de <%= totalPages %></span>
                         <% if (currentPage < totalPages) { %>
-                            <a href="?page=<%= currentPage + 1 %>&modelo=<%= filtroModelo %>"
+                            <a href="?page=<%= currentPage + 1 %>&figura=<%= filtroFigura %>"
                                 class="px-4 py-2 border rounded bg-white hover:bg-gray-50">Próxima</a>
                             <% } %>
             </div>

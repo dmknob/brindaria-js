@@ -63,12 +63,12 @@
                     <div class="md:sticky md:top-8 transition-all duration-500">
                         <div
                             class="rounded-xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 relative group">
-                            <img src="<%= modelo.imagem_url || '/images/placeholder.jpg' %>" alt="<%= modelo.nome %>"
+                            <img src="<%= figura.imagem_url || '/images/placeholder.jpg' %>" alt="<%= figura.nome %>"
                                 class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700">
                         </div>
 
                         <div class="mt-6 text-center no-print">
-                            <a href="https://wa.me/5551996374776?text=Olá! Gostaria de saber mais sobre uma peça de <%= modelo.nome %>."
+                            <a href="https://wa.me/5551996374776?text=Olá! Gostaria de saber mais sobre uma peça de <%= figura.nome %>."
                                 target="_blank"
                                 class="inline-flex items-center gap-2 text-sm font-bold text-green-700 hover:text-green-800 bg-green-50 px-4 py-2 rounded-full hover:bg-green-100 transition border border-green-200">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="currentColor"
@@ -101,60 +101,60 @@
                         </div>
 
                         <h1 class="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-2 leading-tight">
-                            <%= modelo.nome %>
+                            <%= figura.nome %>
                         </h1>
-                        <% if (modelo.subtitulo) { %>
-                            <h2 class="text-xl text-cyan-700 italic font-serif"><%- modelo.subtitulo %></h2>
+                        <% if (figura.subtitulo) { %>
+                            <h2 class="text-xl text-cyan-700 italic font-serif"><%- figura.subtitulo %></h2>
                             <% } %>
                     </div>
 
                     <div
                         class="bg-gray-50 border border-gray-100 rounded-lg p-6 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                        <% if (modelo.conhecido_como) { %>
+                        <% if (figura.conhecido_como) { %>
                             <div class="flex items-start gap-3 sm:col-span-2">
                                 <span class="text-2xl">✨</span>
                                 <div>
                                     <span class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Títulos
                                         e Alcunhas</span>
-                                    <span class="text-gray-700 font-medium"><%- modelo.conhecido_como %></span>
+                                    <span class="text-gray-700 font-medium"><%- figura.conhecido_como %></span>
                                 </div>
                             </div>
                             <% } %>
-                                <% if (modelo.dia_celebracao) { %>
+                                <% if (figura.dia_celebracao) { %>
                                     <div class="flex items-start gap-3">
                                         <span class="text-2xl">📅</span>
                                         <div>
                                             <span
                                                 class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Celebrado
                                                 em</span>
-                                            <span class="text-gray-700"><%- modelo.dia_celebracao %></span>
+                                            <span class="text-gray-700"><%- figura.dia_celebracao %></span>
                                         </div>
                                     </div>
                                     <% } %>
-                                        <% if (modelo.invocado_para) { %>
+                                        <% if (figura.invocado_para) { %>
                                             <div class="flex items-start gap-3">
                                                 <span class="text-2xl">🛡️</span>
                                                 <div>
                                                     <span
                                                         class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Invocado
                                                         Para</span>
-                                                    <span class="text-gray-700"><%- modelo.invocado_para %></span>
+                                                    <span class="text-gray-700"><%- figura.invocado_para %></span>
                                                 </div>
                                             </div>
                                             <% } %>
-                                                <% if (modelo.locais_devocao) { %>
+                                                <% if (figura.locais_devocao) { %>
                                                     <div class="flex items-start gap-3 sm:col-span-2">
                                                         <span class="text-2xl">📍</span>
                                                         <div>
                                                             <span
                                                                 class="block font-bold text-gray-900 uppercase text-xs tracking-wide">Locais
                                                                 de Devoção</span>
-                                                            <span class="text-gray-700"><%- modelo.locais_devocao
+                                                            <span class="text-gray-700"><%- figura.locais_devocao
                                                                     %></span>
                                                         </div>
                                                     </div>
                                                     <% } %>
-                                                        <% if (modelo.variacoes_nome) { %>
+                                                        <% if (figura.variacoes_nome) { %>
                                                             <div
                                                                 class="flex items-start gap-3 sm:col-span-2 border-t border-gray-200 pt-4 mt-2">
                                                                 <span class="text-2xl">🇧🇷</span>
@@ -164,7 +164,7 @@
                                                                         no Brasil como</span>
                                                                     <span
                                                                         class="text-gray-600 text-xs leading-relaxed"><%-
-                                                                            modelo.variacoes_nome %></span>
+                                                                            figura.variacoes_nome %></span>
                                                                 </div>
                                                             </div>
                                                             <% } %>
@@ -172,22 +172,22 @@
 
                     <section class="prose prose-lg prose-cyan text-gray-600 max-w-none text-justify">
                         <h3 class="font-serif font-bold text-2xl text-gray-900 mb-4">História e Significado</h3>
-                        <%- modelo.historia %>
+                        <%- figura.historia %>
                     </section>
 
-                    <% if (modelo.detalhes_visuais) { %>
+                    <% if (figura.detalhes_visuais) { %>
                         <section class="prose prose-lg prose-cyan text-gray-600 max-w-none text-justify border-t pt-8">
                             <h3 class="font-serif font-bold text-2xl text-gray-900 mb-4">Como Identificar</h3>
-                            <%- modelo.detalhes_visuais %>
+                            <%- figura.detalhes_visuais %>
                         </section>
                         <% } %>
 
-                            <% if (modelo.oracao) { %>
+                            <% if (figura.oracao) { %>
                                 <section id="area-oracao"
                                     class="mt-12 bg-stone-50 border border-stone-200 p-8 md:p-12 rounded-lg relative">
                                     <div id="titulo-impresso" style="display: none;">
                                         <h1 style="font-size: 22pt; font-weight: bold; margin-bottom: 5px;">
-                                            <%= modelo.nome %>
+                                            <%= figura.nome %>
                                         </h1>
                                         <p style="font-size: 12pt; color: #666;">Brindaria - Arte Espiritual</p>
                                         <hr style="margin: 15px auto; width: 50%; border-top: 1px solid #ccc;">
@@ -199,7 +199,7 @@
 
                                     <div
                                         class="texto-oracao font-serif text-xl md:text-2xl leading-relaxed text-gray-800 text-center italic">
-                                        <%- modelo.oracao.replace(/\n/g, '<br>' ) %>
+                                        <%- figura.oracao.replace(/\n/g, '<br>' ) %>
                                     </div>
 
                                     <div class="text-center mt-6">
@@ -277,11 +277,11 @@
                                                         Ficha Técnica da Peça</h4>
                                                     <ul class="space-y-1 text-gray-700">
                                                         <li>
-                                                            <strong>Modelo:</strong>
-                                                            <%= modelo.nome %>
-                                                                <% if (modelo.colecao) { %>
+                                                            <strong>Figura:</strong>
+                                                            <%= figura.nome %>
+                                                                <% if (figura.colecao) { %>
                                                                     <span class="text-gray-500">(Coleção <%=
-                                                                            modelo.colecao %>)</span>
+                                                                            figura.colecao %>)</span>
                                                                     <% } %>
                                                         </li>
                                                         <li><strong>Material:</strong>
@@ -381,7 +381,7 @@
 
     <script>
         function copiarOracao(btn) {
-            const texto = `<%= modelo.oracao %>`;
+            const texto = `<%= figura.oracao %>`;
             navigator.clipboard.writeText(texto).then(() => {
                 const span = btn.querySelector('.btn-text');
                 const original = span.innerText;

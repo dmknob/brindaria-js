@@ -1,15 +1,14 @@
 // src/routes/adminRoutes.js
 const express = require('express');
 const router = express.Router();
-const rateLimit = require('express-rate-limit');
 const adminController = require('../controllers/adminController');
 const { isAuthenticated } = require('../middleware/auth');
+const rateLimit = require('express-rate-limit');
 const systemController = require('../controllers/systemController');
 
-// --- SEGURANÇA: Limitador de Tentativas (Brute Force) ---
 const loginLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
-    max: 5, // Limite de 5 tentativas por IP
+    windowMs: 15 * 60 * 1000,
+    max: 5,
     message: 'Muitas tentativas de acesso. Por segurança, aguarde 15 minutos.',
     standardHeaders: true,
     legacyHeaders: false,
@@ -25,46 +24,41 @@ router.get('/', (req, res) => {
     }
 });
 
-// GET Login (Mostra o formulário)
 router.get('/login', adminController.getLogin);
-
-// POST Login (Processa a senha) - AQUI entra o limitador
 router.post('/login', loginLimiter, adminController.postLogin);
-
-// Logout
 router.get('/logout', adminController.logout);
 
 //  ####################################################
-// Rotas Protegidas (Middleware aplicado a todas abaixo)
+// ROTAS PROTEGIDAS
 router.use(isAuthenticated);
 
 router.get('/dashboard', adminController.getDashboard);
+
+// --- SISTEMA & BACKUP ---
+// Verifica se o controller existe antes de rotear (segurança caso arquivo falte)
+if (systemController) {
+    router.get('/sistema', systemController.getIndex);
+    router.get('/sistema/backup', systemController.downloadBackup);
+}
 
 // --- CATEGORIAS ---
 router.get('/categorias', adminController.getCategorias);
 router.post('/categorias', adminController.postNovaCategoria);
 
-// MODELOS
-router.get('/modelos', adminController.getModelos);
-router.get('/modelos/novo', adminController.getNovoModelo);
-router.post('/modelos/novo', adminController.postNovoModelo);
-// --- ROTAS DE EDIÇÃO DE MODELO ---
-router.get('/modelos/:id/editar', adminController.getEditarModelo);
-router.post('/modelos/:id/editar', adminController.postEditarModelo);
+// --- FIGURAS ---
+// Agora a URL oficial é /admin/figuras
+router.get('/figuras', adminController.getFiguras);
+router.get('/figuras/novo', adminController.getNovaFigura); // Atenção: /novo e não /nova (padronizado)
+router.post('/figuras/novo', adminController.postNovaFigura);
+router.get('/figuras/:id/editar', adminController.getEditarFigura);
+router.post('/figuras/:id/editar', adminController.postEditarFigura);
 
-// Cadastro de Peça
+// --- PEÇAS ---
 router.get('/pecas', adminController.getPecas);
-router.get('/pecas/nova', adminController.getNovaPeca);
+router.get('/pecas/nova', adminController.getNovaPeca); // Atenção: /nova (feminino)
 router.post('/pecas/nova', adminController.postNovaPeca);
-
-// --- ROTAS DE EDIÇÃO DE PEÇA ---
 router.get('/pecas/:id/editar', adminController.getEditarPeca);
 router.post('/pecas/:id/editar', adminController.postEditarPeca);
-router.post('/pecas/:id/delete', adminController.postDeletarPeca); // Rota de Exclusão
-
-// --- CONFIGURAÇÕES DO SISTEMA ---
-router.get('/sistema', systemController.getIndex);
-router.get('/sistema/backup', systemController.downloadBackup);
-//  ####################################################
+router.post('/pecas/:id/delete', adminController.postDeletarPeca);
 
 module.exports = router;

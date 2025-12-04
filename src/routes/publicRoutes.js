@@ -23,7 +23,7 @@ router.get('/v/:slug/:codigo', (req, res) => {
     res.redirect(`/pecas/espiritual/${slug}/${codigo}`);
 });
 
-// Rota Principal (Modelo e Peça)
+// Rota Principal (Figuras e Peça)
 // O :codigo? com interrogação diz que é opcional
 router.get('/pecas/:categoria/:slug/:codigo?', publicController.getDetalhe);
 

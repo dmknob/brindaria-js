@@ -1,0 +1,276 @@
+<%- include('../layouts/layout-top') %>
+
+<div class="max-w-4xl mx-auto py-8 px-4">
+    
+    <div class="flex justify-between items-center mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+            <%= figura ? 'Editar Figura' : 'Nova Figura' %>
+        </h2>
+        <a href="/admin/figuras" class="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1 py-2 px-3 rounded hover:bg-gray-100 transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+            Cancelar e Voltar
+        </a>
+    </div>
+
+    <form action="/admin/figuras/<%= figura ? figura.id + '/editar' : 'novo' %>" method="POST" class="bg-white p-6 md:p-8 rounded-xl shadow-sm space-y-8 border border-gray-200">
+        
+        <!-- SEÇÃO 1: IDENTIDADE E VISIBILIDADE -->
+        <div class="border-b border-gray-100 pb-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold text-gray-800 flex items-center gap-2">
+                    <span class="bg-gray-100 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">1</span>
+                    Identidade Principal
+                </h3>
+
+                <!-- SWITCH ATIVO/INATIVO -->
+                <div class="flex items-center gap-2">
+                    <label for="ativo_check" class="text-sm font-bold text-gray-600 cursor-pointer">Publicar no Site?</label>
+                    <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                        <input type="checkbox" name="ativo_check" id="ativo_check" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-transform duration-200 ease-in-out <%= (figura && figura.ativo) ? 'right-0 border-green-400' : 'left-0 border-gray-300' %>" <%= (figura && figura.ativo) ? 'checked' : '' %>/>
+                        <label for="ativo_check" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer <%= (figura && figura.ativo) ? 'bg-green-400' : '' %>"></label>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Nome (Gera Slug) -->
+                <div class="col-span-1">
+                    <label class="block text-gray-700 font-bold mb-2">Nome da Figura *</label>
+                    <input type="text" id="nomeInput" name="nome" value="<%= figura ? figura.nome : '' %>" required 
+                           class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 font-bold text-gray-900 bg-gray-50">
+                </div>
+                
+                <!-- Categoria -->
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Categoria</label>
+                    <select id="categoriaSelect" name="categoria_id" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 bg-white">
+                        <% locals.categorias.forEach(cat => { %>
+                            <option value="<%= cat.id %>" data-slug="<%= cat.slug %>" <%= (figura && figura.categoria_id === cat.id) ? 'selected' : '' %>>
+                                <%= cat.nome %>
+                            </option>
+                        <% }) %>
+                    </select>
+                </div>
+
+                <!-- URL / SLUG (COM TRAVA) -->
+                <div class="col-span-2">
+                    <label class="block text-gray-700 font-bold mb-2">
+                        URL Amigável (Slug) *
+                        <span class="text-xs font-normal text-red-500 ml-2 hidden" id="avisoSlug">Cuidado: Alterar quebra QR Codes já impressos!</span>
+                    </label>
+                    
+                    <div class="flex rounded border border-gray-300 overflow-hidden focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 relative">
+                        <!-- Prefixo -->
+                        <span class="bg-gray-100 text-gray-500 px-3 py-3 text-sm font-mono border-r border-gray-300 hidden md:inline-flex items-center select-none">
+                            brindaria.com.br/pecas/<span id="prefixoCategoria">...</span>/
+                        </span>
+                        <span class="bg-gray-100 text-gray-500 px-2 py-3 text-sm font-mono border-r border-gray-300 inline-flex md:hidden items-center">
+                            /<span id="prefixoCategoriaMobile">...</span>/
+                        </span>
+                        
+                        <!-- Input (ReadOnly por padrão se for edição) -->
+                        <input type="text" id="slugInput" name="slug" value="<%= figura ? figura.slug : '' %>" required
+                               <%= figura ? 'readonly' : '' %> 
+                               class="flex-grow p-3 focus:outline-none font-mono text-sm text-gray-700 <%= figura ? 'bg-gray-100 text-gray-500' : 'bg-white' %>"
+                               placeholder="sao-pedro-apostolo">
+                        
+                        <!-- Botão Destravar (Só aparece na edição) -->
+                        <% if (figura) { %>
+                            <button type="button" id="btnDestravar" class="absolute right-2 top-2 text-xs bg-white border border-gray-300 hover:bg-red-50 text-gray-600 hover:text-red-600 px-2 py-1 rounded shadow-sm transition flex items-center gap-1" title="Destravar edição">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                                Editar
+                            </button>
+                        <% } %>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-1">Use apenas letras minúsculas, números e traços. Ex: <code>sao-pedro-apostolo</code></p>
+                </div>
+                
+                <!-- Subtítulo -->
+                <div class="col-span-1">
+                    <label class="block text-gray-700 font-bold mb-2">Subtítulo (Original/Latim)</label>
+                    <input type="text" name="subtitulo" value="<%= figura ? figura.subtitulo : '' %>" placeholder="Ex: Angelus Custos" 
+                           class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+                
+                <!-- Coleção -->
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Coleção</label>
+                    <input type="text" name="colecao" value="<%= figura ? figura.colecao : '' %>" placeholder="Ex: Guerreiros da Fé" 
+                           class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 2: DADOS DE CURADORIA -->
+        <div class="border-b border-gray-100 pb-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="bg-gray-100 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">2</span>
+                Curadoria e Busca
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="col-span-2">
+                    <label class="block text-gray-700 font-bold mb-2">Conhecido Como (Resumo SEO)</label>
+                    <input type="text" name="conhecido_como" value="<%= figura ? figura.conhecido_como : '' %>" placeholder="Ex: O Príncipe da Milícia Celeste" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                    <p class="text-xs text-gray-400 mt-1">Este texto aparecerá como descrição no Google e no WhatsApp.</p>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Dia de Celebração</label>
+                    <input type="text" name="dia_celebracao" value="<%= figura ? figura.dia_celebracao : '' %>" placeholder="Ex: 29 de Setembro" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Variações de Nome (Tags)</label>
+                    <input type="text" name="variacoes_nome" value="<%= figura ? figura.variacoes_nome : '' %>" placeholder="Ex: Miguel, Michael, Michel" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-gray-700 font-bold mb-2">Invocado Para</label>
+                    <input type="text" name="invocado_para" value="<%= figura ? figura.invocado_para : '' %>" placeholder="Ex: Proteção, Justiça, Causas Impossíveis" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-gray-700 font-bold mb-2">Principais Locais de Devoção</label>
+                    <input type="text" name="locais_devocao" value="<%= figura ? figura.locais_devocao : '' %>" placeholder="Ex: Basílica de São Pedro, Santuário de Monte Gargano..." class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500">
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 3: IMAGEM -->
+        <div class="border-b border-gray-100 pb-6">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="bg-gray-100 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">3</span>
+                Imagem da Figura
+            </h3>
+            <% if (figura && figura.imagem_url) { %>
+                <div class="mb-6 flex items-center gap-4 bg-gray-50 p-4 rounded border border-gray-200">
+                    <img src="<%= figura.imagem_url %>" class="h-24 w-24 object-cover rounded shadow bg-white">
+                    <div>
+                        <span class="block text-sm text-green-600 font-bold mb-1">Imagem Atual</span>
+                        <span class="block text-xs text-gray-500 font-mono break-all"><%= figura.imagem_url %></span>
+                    </div>
+                </div>
+            <% } %>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Opção A: Colar URL (Download)</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" /></svg>
+                        </span>
+                        <input type="url" name="imagem_url_externa" placeholder="https://site.com/foto.jpg" 
+                               class="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 font-mono text-sm">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">Opção B: Nome do Arquivo Local</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" /></svg>
+                        </span>
+                        <input type="text" name="imagem_arquivo_manual" placeholder="Ex: sao-miguel.jpg" 
+                               class="w-full pl-10 p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 font-mono text-sm">
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">Caso o arquivo já esteja na pasta <code>/public/uploads/figuras/</code></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEÇÃO 4: CONTEÚDO RICO -->
+        <div>
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <span class="bg-gray-100 text-gray-600 w-6 h-6 rounded-full flex items-center justify-center text-xs">4</span>
+                Conteúdo Rico (HTML)
+            </h3>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">História e Curiosidades</label>
+                <textarea name="historia" rows="8" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 font-mono text-sm leading-relaxed"><%= figura ? figura.historia : '' %></textarea>
+                <p class="text-xs text-gray-400 mt-1">Suporta tags HTML como &lt;p&gt;, &lt;strong&gt;, &lt;ul&gt;.</p>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">Detalhes Visuais / Iconografia</label>
+                <textarea name="detalhes_visuais" rows="6" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 font-mono text-sm leading-relaxed"><%= figura ? figura.detalhes_visuais : '' %></textarea>
+            </div>
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2">Oração</label>
+                <textarea name="oracao" rows="4" class="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-amber-500 italic bg-amber-50 text-gray-700"><%= figura ? figura.oracao : '' %></textarea>
+            </div>
+        </div>
+
+        <!-- BOTÃO FINAL -->
+        <div class="pt-4 border-t border-gray-200">
+            <button type="submit" class="w-full bg-gray-900 text-white font-bold py-4 rounded hover:bg-gray-800 transition shadow-lg text-lg flex justify-center items-center gap-2">
+                <% if (figura) { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                    Salvar Alterações
+                <% } else { %>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    Cadastrar Figura
+                <% } %>
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const nomeInput = document.getElementById('nomeInput');
+        const slugInput = document.getElementById('slugInput');
+        const catSelect = document.getElementById('categoriaSelect');
+        const prefixoDesk = document.getElementById('prefixoCategoria');
+        const prefixoMob = document.getElementById('prefixoCategoriaMobile');
+        const btnDestravar = document.getElementById('btnDestravar');
+        
+        const isEdicao = slugInput.value.trim() !== '';
+
+        function atualizarPrefixo() {
+            const selectedOption = catSelect.options[catSelect.selectedIndex];
+            const slugCat = selectedOption.getAttribute('data-slug') || '...';
+            prefixoDesk.textContent = slugCat;
+            prefixoMob.textContent = slugCat;
+        }
+        catSelect.addEventListener('change', atualizarPrefixo);
+        atualizarPrefixo();
+
+        nomeInput.addEventListener('input', () => {
+            if (isEdicao && slugInput.hasAttribute('readonly')) return;
+            const nome = nomeInput.value;
+            const slug = nome.toString().toLowerCase().trim()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/[^\w\-]+/g, '')
+                .replace(/\-\-+/g, '-');
+            slugInput.value = slug;
+        });
+
+        if (btnDestravar) {
+            btnDestravar.addEventListener('click', function() {
+                const input = document.getElementById('slugInput');
+                const aviso = document.getElementById('avisoSlug');
+                input.removeAttribute('readonly');
+                input.classList.remove('bg-gray-100', 'text-gray-500');
+                input.classList.add('bg-white', 'text-gray-900', 'ring-2', 'ring-red-100');
+                aviso.classList.remove('hidden');
+                this.style.display = 'none';
+                input.focus();
+            });
+        }
+        
+        // Toggle Switch Visual
+        const toggleCheckbox = document.getElementById('ativo_check');
+        const toggleLabel = document.querySelector('.toggle-label');
+        
+        toggleCheckbox.addEventListener('change', function() {
+            if(this.checked) {
+                this.classList.remove('left-0', 'border-gray-300');
+                this.classList.add('right-0', 'border-green-400');
+                toggleLabel.classList.remove('bg-gray-300');
+                toggleLabel.classList.add('bg-green-400');
+            } else {
+                this.classList.remove('right-0', 'border-green-400');
+                this.classList.add('left-0', 'border-gray-300');
+                toggleLabel.classList.remove('bg-green-400');
+                toggleLabel.classList.add('bg-gray-300');
+            }
+        });
+    });
+</script>
+
+<%- include('../layouts/layout-bottom') %>

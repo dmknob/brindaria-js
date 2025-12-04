@@ -45,18 +45,26 @@ app.use(session({
 
 app.use(injectUserVar);
 
-// --- HELPER GLOBAL PARA DATAS ---
-// Disponível em todas as views (EJS)
+// --- HELPER GLOBAL PARA DATAS (ATUALIZADO V2.1) ---
+// Suporta YYYY-MM (Mês/Ano) e YYYY-MM-DD (Data Completa)
 app.locals.formatarData = (dataISO) => {
     if (!dataISO) return 'Data não informada';
-    // Espera formato YYYY-MM
+    
     try {
+        // Caso 1: Data Completa (YYYY-MM-DD) -> "05 de Dezembro de 2025"
+        if (dataISO.length === 10) {
+            const [ano, mes, dia] = dataISO.split('-');
+            const dataObj = new Date(ano, mes - 1, dia);
+            return dataObj.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        
+        // Caso 2: Apenas Mês (YYYY-MM) -> "Novembro de 2025"
         const [ano, mes] = dataISO.split('-');
-        const dataObj = new Date(ano, mes - 1); // Mês começa em 0 no JS
+        const dataObj = new Date(ano, mes - 1);
         const mesExtenso = dataObj.toLocaleString('pt-BR', { month: 'long' });
-        // Capitaliza a primeira letra (novembro -> Novembro)
         const mesFinal = mesExtenso.charAt(0).toUpperCase() + mesExtenso.slice(1);
         return `${mesFinal} de ${ano}`;
+        
     } catch (e) {
         return dataISO; // Se der erro, retorna o original
     }
