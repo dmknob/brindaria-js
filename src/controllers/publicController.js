@@ -32,11 +32,20 @@ const publicController = {
     getDetalhe: (req, res) => {
         const { slug, codigo } = req.params;
 
-        // 1. Buscar Figura
+        // Verifica se é admin (baseado na sessão configurada no app.js/adminRoutes.js)
+        const isAdmin = req.session && req.session.admin;
+
+        // 1. Buscar Figura (Removemos o filtro de ativo na query SQL para verificar via código)
         const figura = db.prepare('SELECT * FROM figuras WHERE slug = ?').get(slug);
 
-        // Se não existe OU está Inativo, retorna 404
-        if (!figura || figura.ativo !== 1) {
+        // Cenário 1: Figura não existe no banco
+        if (!figura) {
+            return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
+        }
+        
+        // Cenário 2: Figura existe, mas está INATIVA
+        // Se NÃO estiver ativa E o usuário NÃO for admin -> 404
+        if (figura.ativo !== 1 && !isAdmin) {
             return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
         }
 
@@ -66,7 +75,8 @@ const publicController = {
             peca, 
             title: pageTitle, 
             description: figura.subtitulo, 
-            canonical: peca ? canonical : null 
+            canonical: peca ? canonical : null,
+            isAdmin: isAdmin // Passamos essa flag para a view caso queira mostrar um aviso visual
         });
     },
 
