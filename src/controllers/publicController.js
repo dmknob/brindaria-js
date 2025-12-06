@@ -136,24 +136,56 @@ const publicController = {
         });
     },
 
-    postValidarPeca: (req, res) => {
+postValidarPeca: (req, res) => {
         let { codigo } = req.body;
-        if (!codigo) return res.redirect('/');
-        codigo = codigo.trim().toUpperCase().replace('#', '');
 
-        // 1. Tenta CHAVE (5 chars)
+        if (!codigo) {
+            return res.redirect('/');
+        }
+
+        // 1. LIMPEZA BÁSICA
+        // Remove espaços, # e converte para maiúsculo
+        const inputLimpo = codigo.trim().toUpperCase().replace('#', '');
+        
+        // ---------------------------------------------------------
+        // 2. MAPEAMENTO EXPLÍCITO (ALIAS)
+        // Define apelidos manuais para chaves específicas
+        // ---------------------------------------------------------
+        const ALIAS_MAP = {
+            'N00A': 'NFEUZ',
+            '00A': 'NFEUZ',
+            '0A': 'NFEUZ',
+            'A': 'NFEUZ'
+        };
+
+        // Verifica se o input bate com algum alias
+        if (ALIAS_MAP[inputLimpo]) {
+            const chaveDestino = ALIAS_MAP[inputLimpo];
+            return res.redirect(`/v/${chaveDestino}`);
+        }
+
+        // ---------------------------------------------------------
+        // 3. BUSCA PADRÃO (Chave ou Sequencial)
+        // ---------------------------------------------------------
+
+        // Tenta buscar pela CHAVE DE ACESSO (Prioridade Máxima - Única)
         const pecaPorChave = db.prepare(`
             SELECT p.chave_acesso FROM pecas p WHERE p.chave_acesso = ?
-        `).get(codigo);
+        `).get(inputLimpo);
 
         if (pecaPorChave) {
             return res.redirect(`/v/${pecaPorChave.chave_acesso}`);
         }
 
-        // 2. Tenta Código Legado (#001)
-        let codigoLegado = codigo;
-        if (/^\d+$/.test(codigo)) codigoLegado = codigo.padStart(3, '0');
+        // Tenta buscar pelo CÓDIGO LEGADO (ex: 001)
+        // Normaliza para 3 dígitos se for numérico (1 -> 001)
+        let codigoLegado = inputLimpo;
+        if (/^\d+$/.test(inputLimpo)) {
+            codigoLegado = inputLimpo.padStart(3, '0');
+        }
 
+        // Busca peças com esse código (#001 ou 001)
+        // Nota: codigo_exibicao pode ser NULL agora, então só buscamos se tiver valor
         const pecasPorCodigo = db.prepare(`
             SELECT p.*, f.nome as figura_nome, f.slug as figura_slug, f.imagem_url
             FROM pecas p
@@ -162,14 +194,21 @@ const publicController = {
         `).all(codigoLegado, '#' + codigoLegado);
 
         if (pecasPorCodigo.length === 1) {
+            // Se achou só uma, redireciona para a chave dela
             const p = pecasPorCodigo[0];
-            // Se achou por código legado, redireciona para a rota de chave se possível, ou rota antiga
             return res.redirect(`/v/${p.chave_acesso}`);
         } else if (pecasPorCodigo.length > 1) {
-            return res.render('pages/selecao-figura', { title: 'Selecione', codigo: codigoLegado, pecas: pecasPorCodigo });
+            // AMBIGUIDADE! (Ex: #001 de dois santos diferentes)
+            // Renderiza a tela de seleção para o usuário escolher.
+            return res.render('pages/selecao-figura', {
+                title: 'Selecione sua Figura',
+                codigo: codigoLegado,
+                pecas: pecasPorCodigo
+            });
         }
 
-        return res.render('pages/404', { title: 'Não encontrado' });
+        // 4. Nada encontrado
+        return res.render('pages/404', { title: 'Peça não encontrada' });
     }
 };
 
