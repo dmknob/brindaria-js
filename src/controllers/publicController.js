@@ -4,27 +4,30 @@ const db = require('../../database/db');
 const publicController = {
 
     getHome: (req, res) => {
-        // Apenas figuras ATIVAS na Home
         const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT 20').all();
-        res.render('pages/home', { 
-            title: 'Brindaria - Arte Sacra', 
-            figuras: figuras,
-            canonical: 'https://brindaria.com.br' 
+
+        res.render('pages/home', {
+            title: 'Brindaria - Arte Sacra e Presentes',
+            figuras: figuras, 
+            canonical: 'https://brindaria.com.br'
         });
     },
 
     getContato: (req, res) => {
-        res.render('pages/contato', { title: 'Contato', canonical: 'https://brindaria.com.br/contato' });
+        res.render('pages/contato', {
+            title: 'Contato - Vamos Conversar?',
+            canonical: 'https://brindaria.com.br/contato'
+        });
     },
 
     getCatalogo: (req, res) => {
-        // Apenas figuras ATIVAS no Catálogo
         const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC').all();
-        res.render('pages/colecao', { 
-            title: 'Nossa Coleção', 
-            description: 'Acervo de arte sacra.', 
+
+        res.render('pages/colecao', {
+            title: 'Nossa Coleção - Brindaria',
+            description: 'Conheça nosso acervo de arte sacra e imagens personalizadas.',
             figuras: figuras, 
-            canonical: 'https://brindaria.com.br/pecas' 
+            canonical: 'https://brindaria.com.br/pecas'
         });
     },
 
@@ -32,28 +35,17 @@ const publicController = {
     getDetalhe: (req, res) => {
         const { slug, codigo } = req.params;
 
-        // Verifica se é admin (baseado na sessão configurada no app.js/adminRoutes.js)
-        const isAdmin = req.session && req.session.admin;
-
-        // 1. Buscar Figura (Removemos o filtro de ativo na query SQL para verificar via código)
         const figura = db.prepare('SELECT * FROM figuras WHERE slug = ?').get(slug);
 
-        // Cenário 1: Figura não existe no banco
-        if (!figura) {
-            return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
-        }
-        
-        // Cenário 2: Figura existe, mas está INATIVA
-        // Se NÃO estiver ativa E o usuário NÃO for admin -> 404
-        if (figura.ativo !== 1 && !isAdmin) {
+        if (!figura || figura.ativo !== 1) {
             return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
         }
 
         let peca = null;
         let pageTitle = figura.nome;
         let canonical = `https://brindaria.com.br/pecas/espiritual/${slug}`;
+        let metaDescription = figura.subtitulo || `Conheça a história de ${figura.nome}`;
 
-        // 2. Buscar Peça Específica (Se houver código legado)
         if (codigo) {
             peca = db.prepare(`
                 SELECT * FROM pecas 
@@ -67,34 +59,21 @@ const publicController = {
                 `).get(figura.id, '#' + codigo);
             }
             
-            if (peca) pageTitle = `Peça ${peca.codigo_exibicao} - ${figura.nome}`;
+            if (peca) {
+                pageTitle = `Peça ${peca.codigo_exibicao} - ${figura.nome}`;
+            }
         }
 
-        res.render('pages/peca-detalhe', { 
+        res.render('pages/peca-detalhe', {
             figura: figura, 
-            peca, 
-            title: pageTitle, 
-            description: figura.subtitulo, 
-            canonical: peca ? canonical : null,
-            isAdmin: isAdmin // Passamos essa flag para a view caso queira mostrar um aviso visual
+            peca,
+            title: pageTitle,
+            description: metaDescription,
+            canonical: peca ? canonical : null
         });
     },
 
-    getSitemap: (req, res) => {
-        // Apenas ativos no sitemap
-        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
-        const baseUrl = 'https://brindaria.com.br';
-        let xml = `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>${baseUrl}/</loc><priority>1.0</priority></url><url><loc>${baseUrl}/pecas</loc><priority>0.8</priority></url>`;
-
-        figuras.forEach(f => {
-            xml += `<url><loc>${baseUrl}/pecas/espiritual/${f.slug}</loc><priority>0.9</priority></url>`;
-        });
-        xml += '</urlset>';
-        res.header('Content-Type', 'application/xml');
-        res.send(xml);
-    },
-
-    // Busca por Chave (Lógica nova V2.1)
+    // Rota: /v/:chave
     getPecaByKey: (req, res) => {
         const { chave } = req.params;
         
@@ -112,19 +91,33 @@ const publicController = {
 
         if (!dados) return res.status(404).render('pages/404', { title: 'Peça não encontrada' });
 
-        // Remonta objetos para a view
         const figura = {
-            nome: dados.nome, subtitulo: dados.subtitulo, slug: dados.figura_slug,
-            colecao: dados.colecao, imagem_url: dados.imagem_url, conhecido_como: dados.conhecido_como,
-            dia_celebracao: dados.dia_celebracao, invocado_para: dados.invocado_para, locais_devocao: dados.locais_devocao,
-            variacoes_nome: dados.variacoes_nome, historia: dados.historia, oracao: dados.oracao, detalhes_visuais: dados.detalhes_visuais
+            nome: dados.nome,
+            subtitulo: dados.subtitulo,
+            slug: dados.figura_slug,
+            colecao: dados.colecao,
+            imagem_url: dados.imagem_url,
+            conhecido_como: dados.conhecido_como,
+            dia_celebracao: dados.dia_celebracao,
+            invocado_para: dados.invocado_para,
+            locais_devocao: dados.locais_devocao,
+            variacoes_nome: dados.variacoes_nome,
+            historia: dados.historia,
+            oracao: dados.oracao,
+            detalhes_visuais: dados.detalhes_visuais
         };
 
         const peca = {
-            id: dados.id, codigo_exibicao: dados.codigo_exibicao || 'PENDENTE',
-            chave_acesso: dados.chave_acesso,inscricao_base: dados.inscricao_base, tamanho: dados.tamanho,
-            material: dados.material, acabamento: dados.acabamento,
-            data_producao: dados.data_producao, mensagem: dados.mensagem, cliente_nome: dados.cliente_nome
+            id: dados.id,
+            codigo_exibicao: dados.codigo_exibicao || 'PENDENTE',
+            chave_acesso: dados.chave_acesso,
+            inscricao_base: dados.inscricao_base,
+            tamanho: dados.tamanho,
+            material: dados.material,
+            acabamento: dados.acabamento,
+            data_producao: dados.data_producao,
+            mensagem: dados.mensagem,
+            cliente_nome: dados.cliente_nome
         };
 
         const canonical = `https://brindaria.com.br/pecas/${dados.categoria_slug || 'espiritual'}/${dados.figura_slug}`;
@@ -132,11 +125,40 @@ const publicController = {
         res.render('pages/peca-detalhe', {
             title: `Autenticidade: ${figura.nome}`,
             description: `Verificação de autenticidade`,
-            figura, peca, canonical
+            figura,
+            peca,
+            canonical
         });
     },
 
-postValidarPeca: (req, res) => {
+    getSitemap: (req, res) => {
+        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
+        const baseUrl = 'https://brindaria.com.br';
+
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+            <url><loc>${baseUrl}/contato</loc><priority>0.5</priority></url>
+            <url><loc>${baseUrl}/pecas</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+        `;
+
+        figuras.forEach(f => {
+            xml += `
+            <url>
+                <loc>${baseUrl}/pecas/espiritual/${f.slug}</loc>
+                <changefreq>weekly</changefreq>
+                <priority>0.9</priority>
+            </url>`;
+        });
+
+        xml += '</urlset>';
+        
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    },
+
+    // Validação de Peça (Busca por Código ou Chave)
+    postValidarPeca: (req, res) => {
         let { codigo } = req.body;
 
         if (!codigo) {
@@ -144,13 +166,10 @@ postValidarPeca: (req, res) => {
         }
 
         // 1. LIMPEZA BÁSICA
-        // Remove espaços, # e converte para maiúsculo
         const inputLimpo = codigo.trim().toUpperCase().replace('#', '');
         
-        // ---------------------------------------------------------
-        // 2. MAPEAMENTO EXPLÍCITO (ALIAS)
-        // Define apelidos manuais para chaves específicas
-        // ---------------------------------------------------------
+        // 2. MAPEAMENTO EXPLÍCITO (ALIAS - CASOS ESPECIAIS)
+        // Aqui tratamos o N00A e outras exceções não numéricas
         const ALIAS_MAP = {
             'N00A': 'NFEUZ',
             '00A': 'NFEUZ',
@@ -158,17 +177,11 @@ postValidarPeca: (req, res) => {
             'A': 'NFEUZ'
         };
 
-        // Verifica se o input bate com algum alias
         if (ALIAS_MAP[inputLimpo]) {
-            const chaveDestino = ALIAS_MAP[inputLimpo];
-            return res.redirect(`/v/${chaveDestino}`);
+            return res.redirect(`/v/${ALIAS_MAP[inputLimpo]}`);
         }
 
-        // ---------------------------------------------------------
-        // 3. BUSCA PADRÃO (Chave ou Sequencial)
-        // ---------------------------------------------------------
-
-        // Tenta buscar pela CHAVE DE ACESSO (Prioridade Máxima - Única)
+        // 3. BUSCA POR CHAVE DE ACESSO (Prioridade Máxima)
         const pecaPorChave = db.prepare(`
             SELECT p.chave_acesso FROM pecas p WHERE p.chave_acesso = ?
         `).get(inputLimpo);
@@ -177,15 +190,22 @@ postValidarPeca: (req, res) => {
             return res.redirect(`/v/${pecaPorChave.chave_acesso}`);
         }
 
-        // Tenta buscar pelo CÓDIGO LEGADO (ex: 001)
-        // Normaliza para 3 dígitos se for numérico (1 -> 001)
+        // 4. BUSCA POR CÓDIGO SEQUENCIAL (LEGADO - COM TRAVA DE SEGURANÇA)
         let codigoLegado = inputLimpo;
         if (/^\d+$/.test(inputLimpo)) {
             codigoLegado = inputLimpo.padStart(3, '0');
         }
 
-        // Busca peças com esse código (#001 ou 001)
-        // Nota: codigo_exibicao pode ser NULL agora, então só buscamos se tiver valor
+        // === LISTA BRANCA: Apenas estes códigos históricos podem ser buscados publicamente ===
+        // Isso impede que alguém digite "003" e ache a peça nova.
+        const CODIGOS_PUBLICOS_PERMITIDOS = ['001', '002'];
+
+        if (!CODIGOS_PUBLICOS_PERMITIDOS.includes(codigoLegado)) {
+            // Se não for chave e não for um código permitido, fingimos que não existe
+            return res.render('pages/404', { title: 'Peça não encontrada' });
+        }
+
+        // Se passou pela trava, busca no banco
         const pecasPorCodigo = db.prepare(`
             SELECT p.*, f.nome as figura_nome, f.slug as figura_slug, f.imagem_url
             FROM pecas p
@@ -194,20 +214,17 @@ postValidarPeca: (req, res) => {
         `).all(codigoLegado, '#' + codigoLegado);
 
         if (pecasPorCodigo.length === 1) {
-            // Se achou só uma, redireciona para a chave dela
             const p = pecasPorCodigo[0];
             return res.redirect(`/v/${p.chave_acesso}`);
         } else if (pecasPorCodigo.length > 1) {
-            // AMBIGUIDADE! (Ex: #001 de dois santos diferentes)
-            // Renderiza a tela de seleção para o usuário escolher.
             return res.render('pages/selecao-figura', {
-                title: 'Selecione sua Figura',
+                title: 'Selecione a Figura',
                 codigo: codigoLegado,
                 pecas: pecasPorCodigo
             });
         }
 
-        // 4. Nada encontrado
+        // 5. Nada encontrado
         return res.render('pages/404', { title: 'Peça não encontrada' });
     }
 };
