@@ -21,7 +21,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 
-                <!-- FIGURA (Antigo Modelo) -->
+                <!-- FIGURA (Obrigatório) -->
                 <div class="col-span-1">
                     <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Figura *</label>
                     <div class="relative">
@@ -39,7 +39,7 @@
                     </div>
                 </div>
 
-                <!-- CHAVE DE ACESSO -->
+                <!-- CHAVE DE ACESSO (Obrigatório) -->
                 <% if (!peca) { %>
                     <div class="lg:col-span-1 bg-amber-50 p-4 rounded-lg border border-amber-200">
                         <label class="block text-amber-800 font-bold mb-2 text-sm uppercase tracking-wide flex items-center gap-2">
@@ -56,7 +56,6 @@
                                 <% }) %>
                             <% } %>
                         </select>
-                        <p class="text-xs text-amber-700 mt-1">Selecione a chave impressa no pedestal ou deixe vazio para gerar.</p>
                     </div>
                 <% } else { %>
                     <div class="lg:col-span-1">
@@ -68,26 +67,19 @@
                 <!-- CÓDIGO (Opcional) -->
                 <div>
                     <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Código (#)</label>
-                    <input type="text" name="codigo_exibicao" id="codExibicao" 
-                           value="<%= peca ? peca.codigo_exibicao : '' %>"
-                           placeholder="#000 (Opcional)"
-                           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-mono font-bold text-amber-600 bg-gray-50 text-lg">
-                    <p class="text-xs text-gray-400 mt-1">Pode ser preenchido na expedição.</p>
+                    <input type="text" name="codigo_exibicao" value="<%= peca ? peca.codigo_exibicao : '' %>" placeholder="#000 (Opcional)" class="w-full p-4 border border-gray-300 rounded-lg font-mono font-bold text-amber-600">
                 </div>
 
                 <!-- INSCRIÇÃO NA BASE -->
                 <div class="lg:col-span-2">
                     <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Inscrição na Base</label>
-                    <input type="text" name="inscricao_base" value="<%= peca ? peca.inscricao_base : '' %>" 
-                           placeholder="Ex: Protegei a Alicia" maxlength="40"
-                           class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-bold text-gray-800 text-lg">
+                    <input type="text" name="inscricao_base" value="<%= peca ? peca.inscricao_base : '' %>" placeholder="Ex: Protegei a Alicia" class="w-full p-4 border border-gray-300 rounded-lg font-bold text-gray-800 text-lg">
                 </div>
 
                 <!-- TAMANHO -->
                 <div>
                     <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Tamanho</label>
-                    <input type="text" name="tamanho" value="<%= peca ? peca.tamanho : '20cm' %>" 
-                           class="w-full p-4 border border-gray-300 rounded-lg text-base">
+                    <input type="text" name="tamanho" value="<%= peca ? peca.tamanho : '20cm' %>" class="w-full p-4 border border-gray-300 rounded-lg text-base">
                 </div>
 
                 <!-- MATERIAL -->
@@ -102,10 +94,9 @@
                     <input type="text" name="acabamento" value="<%= peca ? peca.acabamento : 'Visual Mármore' %>" class="w-full p-4 border border-gray-300 rounded-lg text-base">
                 </div>
 
-                <!-- DATA DE PRODUÇÃO -->
+                <!-- DATA DE PRODUÇÃO (Type Date) -->
                 <div>
                     <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Data de Produção</label>
-                    <!-- Input DATE completo -->
                     <input type="date" name="data_producao" 
                            value="<%= peca ? peca.data_producao : '' %>" 
                            placeholder="DD/MM/AAAA"
@@ -122,22 +113,18 @@
             </h3>
             <div class="space-y-6">
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Nome do Cliente (Comprador)</label>
-                    <input type="text" name="cliente_nome" value="<%= peca ? peca.cliente_nome : '' %>" 
-                           placeholder="Ex: Pedro Knob" class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 text-base">
+                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Cliente</label>
+                    <input type="text" name="cliente_nome" value="<%= peca ? peca.cliente_nome : '' %>" class="w-full p-4 border border-gray-300 rounded-lg">
                 </div>
                 <div>
-                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Dedicatória Completa</label>
-                    <textarea name="mensagem" rows="5" 
-                              class="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:border-amber-500 font-serif italic text-lg leading-relaxed"
-                              placeholder="Cole o texto completo da dedicatória aqui..."><%= peca ? peca.mensagem : '' %></textarea>
+                    <label class="block text-gray-700 font-bold mb-2 text-sm uppercase tracking-wide">Dedicatória</label>
+                    <textarea name="mensagem" rows="5" class="w-full p-4 border border-gray-300 rounded-lg font-serif italic"><%= peca ? peca.mensagem : '' %></textarea>
                 </div>
             </div>
         </div>
 
-        <!-- BOTÕES -->
         <div class="pt-6">
-            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-5 rounded-xl shadow-lg text-xl transition transform active:scale-95">
+            <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-5 rounded-xl shadow-lg text-xl">
                 <%= peca ? 'Salvar Alterações' : 'Registrar Peça' %>
             </button>
         </div>
@@ -152,11 +139,11 @@
     <% } %>
 </div>
 
-<!-- SCRIPT: Placeholder simples -->
+<!-- SCRIPT: Placeholder Visual -->
 <% if (!peca) { %>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const select = document.getElementById('figuraSelect'); // ID corrigido se necessário
+        const select = document.getElementById('figuraSelect');
         const inputExibicao = document.getElementById('codExibicao');
         
         if (select && inputExibicao) {

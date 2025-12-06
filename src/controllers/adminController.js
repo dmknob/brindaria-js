@@ -9,7 +9,6 @@ const { ensureReserveKeys, generateUniqueKey } = require('../utils/keyGenerator'
 
 // --- FUNÇÕES AUXILIARES ---
 
-// Faz download de uma imagem externa e salva na pasta public/uploads/figuras
 const downloadImage = (url, filename) => {
     return new Promise((resolve, reject) => {
         // Caminho definitivo para V2.1
@@ -30,7 +29,7 @@ const downloadImage = (url, filename) => {
                 file.close(() => resolve(`/uploads/figuras/${filename}`));
             });
         }).on('error', (err) => {
-            fs.unlink(filepath, () => { }); // Apaga arquivo corrompido se der erro
+            fs.unlink(filepath, () => { });
             reject(err);
         });
     });
@@ -48,7 +47,6 @@ module.exports = {
 
     postLogin: (req, res) => {
         const { password } = req.body;
-        // Verifica a senha usando o hash do .env
         if (auth.checkPassword(password)) {
             req.session.admin = true;
             const redirect = req.session.returnTo || '/admin/dashboard';
@@ -69,11 +67,9 @@ module.exports = {
     // =========================================
 
     getDashboard: (req, res) => {
-        // Estatísticas
         const totalPecas = db.prepare('SELECT COUNT(*) as count FROM pecas').get().count;
         const totalFiguras = db.prepare('SELECT COUNT(*) as count FROM figuras').get().count;
 
-        // Tabela de últimas vendas (Join com figuras)
         const ultimasVendas = db.prepare(`
             SELECT p.*, f.nome as figura_nome, f.slug 
             FROM pecas p 
@@ -81,7 +77,6 @@ module.exports = {
             ORDER BY p.id DESC LIMIT 5
         `).all();
 
-        // Garante chaves de reserva
         const chavesReserva = ensureReserveKeys(db, 10);
 
         res.render('admin/dashboard', {
@@ -100,7 +95,6 @@ module.exports = {
     getCategorias: (req, res) => {
         const categorias = db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all();
         
-        // Conta itens por categoria (usando tabela figuras)
         const contagem = db.prepare('SELECT categoria_id, COUNT(*) as total FROM figuras GROUP BY categoria_id').all();
         const mapContagem = {};
         contagem.forEach(c => mapContagem[c.categoria_id] = c.total);
@@ -132,7 +126,7 @@ module.exports = {
 
     getFiguras: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 12;
+        const limit = 6;
         const offset = (page - 1) * limit;
 
         const figuras = db.prepare(`
@@ -185,7 +179,6 @@ module.exports = {
                 const filename = `${finalSlug}${ext}`;
                 finalImagePath = await downloadImage(imagem_url_externa, filename);
             } else if (imagem_arquivo_manual && imagem_arquivo_manual.trim() !== "") {
-                // Caminho atualizado para figuras
                 finalImagePath = `/uploads/figuras/${imagem_arquivo_manual.trim()}`;
             }
 
@@ -203,7 +196,7 @@ module.exports = {
                 historia, oracao, detalhes_visuais, ativo
             );
 
-            res.redirect('/admin/figuras');
+            res.redirect('/admin/figuras'); // Rota atualizada no adminRoutes
         } catch (err) {
             console.error(err);
             res.status(500).send("Erro ao criar figura: " + err.message);
@@ -249,11 +242,9 @@ module.exports = {
                 const ext = path.extname(imagem_url_externa.split('?')[0]) || '.jpg';
                 const filename = `${currentSlug}${ext}`;
                 const localPath = await downloadImage(imagem_url_externa, filename);
-
                 imageSqlFragment = ", imagem_url = ?";
                 params.push(localPath);
             } else if (imagem_arquivo_manual && imagem_arquivo_manual.trim() !== "") {
-                // Caminho atualizado para figuras
                 imageSqlFragment = ", imagem_url = ?";
                 params.push(`/uploads/figuras/${imagem_arquivo_manual.trim()}`);
             }
@@ -303,7 +294,6 @@ module.exports = {
 
         const pecas = db.prepare(sql).all(...params);
 
-        // Contagem
         let countSql = `SELECT COUNT(*) as count FROM pecas`;
         let countParams = [];
         if (filtroFigura) {
@@ -312,7 +302,6 @@ module.exports = {
         }
         const total = db.prepare(countSql).get(...countParams).count;
 
-        // Lista para dropdown
         const figuras = db.prepare('SELECT id, nome FROM figuras ORDER BY nome ASC').all();
 
         res.render('admin/lista-pecas', {
@@ -338,7 +327,7 @@ module.exports = {
 
     postNovaPeca: (req, res) => {
         const {
-            figura_id, // OBRIGATÓRIO
+            figura_id,
             codigo_exibicao, inscricao_base, tamanho, material, acabamento,
             cliente_nome, mensagem, data_producao, chave_acesso
         } = req.body;
@@ -350,11 +339,10 @@ module.exports = {
                 const inReserva = db.prepare('SELECT id FROM chaves_reserva WHERE chave = ?').get(finalKey);
                 if (inReserva) db.prepare('DELETE FROM chaves_reserva WHERE id = ?').run(inReserva.id);
             } else {
-                // Gera nova se não selecionou
                 finalKey = generateUniqueKey(db);
             }
 
-            // Código Sequencial (Opcional/NULL se não fornecido)
+            // Código Sequencial (Opcional)
             const codigo_sequencial = codigo_exibicao ? (parseInt(codigo_exibicao.replace(/\D/g, ''), 10) || 0) : null;
 
             const insert = db.prepare(`
@@ -365,10 +353,19 @@ module.exports = {
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             `);
 
+            // IMPORTANTE: || null garante que campos vazios virem NULL no banco
             insert.run(
-                figura_id, codigo_sequencial, codigo_exibicao || null,
-                inscricao_base || null, tamanho || null, material || null, acabamento || null,
-                cliente_nome || null, mensagem || null, data_producao || null, finalKey
+                figura_id, 
+                codigo_sequencial || null, 
+                codigo_exibicao || null,
+                inscricao_base || null, 
+                tamanho || null, 
+                material || null, 
+                acabamento || null,
+                cliente_nome || null, 
+                mensagem || null, 
+                data_producao || null, 
+                finalKey
             );
 
             res.redirect('/admin/pecas');
@@ -379,8 +376,7 @@ module.exports = {
     },
 
     getEditarPeca: (req, res) => {
-        const { id } = req.params;
-        const peca = db.prepare('SELECT * FROM pecas WHERE id = ?').get(id);
+        const peca = db.prepare('SELECT * FROM pecas WHERE id = ?').get(req.params.id);
         const figuras = db.prepare('SELECT id, nome FROM figuras ORDER BY nome').all();
 
         if (!peca) return res.status(404).send('Peça não encontrada');
@@ -410,9 +406,17 @@ module.exports = {
                     cliente_nome = ?, mensagem = ?, data_producao = ?
                 WHERE id = ?
             `).run(
-                figura_id, codigo_exibicao || null, codigo_sequencial, inscricao_base || null,
-                tamanho || null, material || null, acabamento || null,
-                cliente_nome || null, mensagem || null, data_producao || null, id
+                figura_id, 
+                codigo_exibicao || null, 
+                codigo_sequencial || null, 
+                inscricao_base || null,
+                tamanho || null, 
+                material || null, 
+                acabamento || null,
+                cliente_nome || null, 
+                mensagem || null, 
+                data_producao || null, 
+                id
             );
             res.redirect('/admin/pecas');
         } catch (err) {

@@ -202,7 +202,11 @@ const publicController = {
 
         if (!CODIGOS_PUBLICOS_PERMITIDOS.includes(codigoLegado)) {
             // Se não for chave e não for um código permitido, fingimos que não existe
-            return res.render('pages/404', { title: 'Peça não encontrada' });
+            //return res.render('pages/404', { title: 'Peça não encontrada' });
+            return res.render('pages/erro-busca', { 
+                title: 'Peça não localizada',
+                codigoTentado: codigo // Passa o que o usuário digitou
+            });
         }
 
         // Se passou pela trava, busca no banco
@@ -224,9 +228,13 @@ const publicController = {
             });
         }
 
-        // 5. Nada encontrado
-        return res.render('pages/404', { title: 'Peça não encontrada' });
-    }
+    // 5. Nada encontrado
+            // UX Melhorada: Envia o código tentado para a view explicar melhor
+            return res.render('pages/erro-busca', { 
+                title: 'Peça não localizada',
+                codigoTentado: codigo // Passa o que o usuário digitou
+            });
+        }
 };
 
 module.exports = publicController;
