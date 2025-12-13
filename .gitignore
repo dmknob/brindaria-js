@@ -7,6 +7,7 @@ node_modules/
 *.db-shm
 *.db-wal
 *.sqlite
+brindaria_prod.db_
 
 # Dados Sensíveis (Dump)
 database/seeds/*.json
