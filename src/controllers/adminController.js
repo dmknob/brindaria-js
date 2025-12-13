@@ -125,7 +125,7 @@ module.exports = {
 
     getFiguras: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 6;
+        const limit = 8;
         const offset = (page - 1) * limit;
 
         const figuras = db.prepare(`
@@ -275,7 +275,7 @@ module.exports = {
 
     getPecas: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 12;
+        const limit = 8;
         const offset = (page - 1) * limit;
         const filtroFigura = req.query.figura || '';
 
