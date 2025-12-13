@@ -29,6 +29,17 @@ router.get('/v/:chave', publicController.getPecaByKey);
 
 // Rota Principal (Figuras e Peça)
 // O :codigo? com interrogação diz que é opcional
+
+// --- HARD REDIRECTS (CORREÇÃO DE QR-CODE) ---
+// Corrige links impressos com o slug antigo `sao-pedro` para o novo `sao-pedro-apostolo`.
+// Mantém código opcional, ex: /pecas/espiritual/sao-pedro/001 -> /pecas/espiritual/sao-pedro-apostolo/001
+router.get('/pecas/espiritual/sao-pedro/:codigo?', (req, res) => {
+    const { codigo } = req.params;
+    let newPath = `/pecas/espiritual/sao-pedro-apostolo`;
+    if (codigo) newPath += `/${codigo}`;
+    return res.redirect(301, newPath);
+});
+
 router.get('/pecas/:categoria/:slug/:codigo?', publicController.getDetalhe);
 
 // Validação de Peça (Busca por Código ou Chave)

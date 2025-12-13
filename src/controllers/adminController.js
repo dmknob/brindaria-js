@@ -74,7 +74,7 @@ module.exports = {
             SELECT p.*, f.nome as figura_nome, f.slug 
             FROM pecas p 
             JOIN figuras f ON p.figura_id = f.id 
-            ORDER BY p.id DESC LIMIT 5
+            ORDER BY p.id DESC LIMIT 8
         `).all();
 
         const chavesReserva = ensureReserveKeys(db, 10);
@@ -83,8 +83,7 @@ module.exports = {
             title: 'Painel Admin',
             totalPecas,
             totalFiguras,
-            ultimasVendas,
-            chavesReserva
+            ultimasVendas
         });
     },
 
@@ -139,6 +138,8 @@ module.exports = {
         const totalPages = Math.ceil(total / limit);
 
         const categorias = db.prepare('SELECT id, nome FROM categorias').all();
+        // Full list used for quick-select dropdown in admin UI
+        const figurasAll = db.prepare('SELECT id, nome FROM figuras ORDER BY nome ASC').all();
         const catMap = {};
         categorias.forEach(c => catMap[c.id] = c.nome);
 
@@ -146,6 +147,7 @@ module.exports = {
             title: 'Gerenciar Figuras',
             figuras,
             catMap,
+            figurasAll,
             currentPage: page,
             totalPages
         });
@@ -273,7 +275,7 @@ module.exports = {
 
     getPecas: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 20;
+        const limit = 12;
         const offset = (page - 1) * limit;
         const filtroFigura = req.query.figura || '';
 

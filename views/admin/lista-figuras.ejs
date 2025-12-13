@@ -3,14 +3,25 @@
 <div class="max-w-5xl mx-auto py-8 px-4">
     
     <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Figuras Cadastradas</h1>
-            <p class="text-sm text-gray-500">Gerencie a curadoria e os textos dos santos.</p>
+        <div class="min-w-0 flex-1 text-center md:text-center">
+            <h1 class="text-2xl font-bold text-gray-800 truncate text-center" title="Figuras Cadastradas">Figuras Cadastradas</h1>
+            <p class="text-sm text-gray-500 truncate text-center" title="Gerencie a curadoria e os textos dos santos.">Gerencie a curadoria e os textos dos santos.</p>
         </div>
-        <a href="/admin/figuras/novo" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow flex items-center gap-2 text-lg">
+        <div class="flex flex-col md:flex-row items-center gap-3">
+            <div class="w-full md:w-auto">
+                <label for="quick-select" class="sr-only">Selecionar Figura</label>
+                <select id="quick-select" aria-label="Selecionar Figura" onchange="if(this.value) window.location='/admin/figuras/' + this.value + '/editar'" class="border border-gray-300 rounded-md py-2 px-3 bg-white text-sm text-gray-700 w-full md:w-48">
+                    <option value="">Ir para figura...</option>
+                    <% if (typeof figurasAll !== 'undefined' && figurasAll.length > 0) { figurasAll.forEach(f => { %>
+                        <option value="<%= f.id %>"><%= f.nome %></option>
+                    <% }) } %>
+                </select>
+            </div>
+            <a href="/admin/figuras/novo" class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg shadow flex items-center gap-2 text-lg w-full md:w-auto justify-center md:justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" /></svg>
             Nova Figura
         </a>
+        </div>
     </div>
 
     <div class="bg-white shadow-sm rounded-lg border border-gray-200 overflow-hidden">
