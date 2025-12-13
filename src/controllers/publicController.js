@@ -31,19 +31,59 @@ const publicController = {
         });
     },
 
+    getSitemap: (req, res) => {
+        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
+        const baseUrl = 'https://brindaria.com.br';
+
+        let xml = `<?xml version="1.0" encoding="UTF-8"?>
+        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+            <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+            <url><loc>${baseUrl}/contato</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
+            <url><loc>${baseUrl}/pecas</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
+        `;
+
+        figuras.forEach(f => {
+            xml += `
+            <url>
+                <loc>${baseUrl}/pecas/espiritual/${f.slug}</loc>
+                <changefreq>weekly</changefreq>
+                <priority>0.9</priority>
+            </url>`;
+        });
+
+        xml += '</urlset>';
+        
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    },
+
+
     // Rota: /pecas/:categoria/:slug/:codigo?
     getDetalhe: (req, res) => {
-        const { slug, codigo } = req.params;
+        const { categoria, slug, codigo } = req.params;
 
-        const figura = db.prepare('SELECT * FROM figuras WHERE slug = ?').get(slug);
+        // Também selecionamos a categoria slug para validar que a rota usa a categoria correta
+        const figura = db.prepare(`
+            SELECT f.*, c.slug as categoria_slug
+            FROM figuras f
+            LEFT JOIN categorias c ON f.categoria_id = c.id
+            WHERE f.slug = ?
+        `).get(slug);
 
         if (!figura || figura.ativo !== 1) {
             return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
         }
 
+        // Validação de categoria: se a categoria na URL não corresponder à categoria
+        // do modelo/figura, devolvemos 404 para evitar confusões entre categorias.
+        const figuraCategoriaSlug = (figura.categoria_slug).toLowerCase();
+        if ((categoria || '').toLowerCase() !== figuraCategoriaSlug) {
+            return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
+        }
+
         let peca = null;
         let pageTitle = figura.nome;
-        let canonical = `https://brindaria.com.br/pecas/espiritual/${slug}`;
+        let canonical = `https://brindaria.com.br/pecas/${figuraCategoriaSlug}/${slug}`;
         let metaDescription = figura.subtitulo || `Conheça a história de ${figura.nome}`;
 
         if (codigo) {
@@ -129,32 +169,6 @@ const publicController = {
             peca,
             canonical
         });
-    },
-
-    getSitemap: (req, res) => {
-        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
-        const baseUrl = 'https://brindaria.com.br';
-
-        let xml = `<?xml version="1.0" encoding="UTF-8"?>
-        <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-            <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-            <url><loc>${baseUrl}/contato</loc><priority>0.5</priority></url>
-            <url><loc>${baseUrl}/pecas</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-        `;
-
-        figuras.forEach(f => {
-            xml += `
-            <url>
-                <loc>${baseUrl}/pecas/espiritual/${f.slug}</loc>
-                <changefreq>weekly</changefreq>
-                <priority>0.9</priority>
-            </url>`;
-        });
-
-        xml += '</urlset>';
-        
-        res.header('Content-Type', 'application/xml');
-        res.send(xml);
     },
 
     // Validação de Peça (Busca por Código ou Chave)

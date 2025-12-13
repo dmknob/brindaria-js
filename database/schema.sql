@@ -2,7 +2,7 @@ PRAGMA foreign_keys = ON;
 
 DROP TABLE IF EXISTS pecas;
 DROP TABLE IF EXISTS chaves_reserva;
-DROP TABLE IF EXISTS oracoes;
+-- DROP TABLE IF EXISTS oracoes;
 DROP TABLE IF EXISTS figuras;
 DROP TABLE IF EXISTS categorias;
 
@@ -55,7 +55,7 @@ CREATE TABLE chaves_reserva (
 );
 
 -- 4. Peças Físicas
-CREATE TABLE pecas (
+ TABLE pecas (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     figura_id INTEGER NOT NULL, -- Renomeado de modelo_id
     
