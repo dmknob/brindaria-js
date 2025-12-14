@@ -223,6 +223,53 @@ const publicController = {
             });
         }
 
+        // Hardcoded exceptions (manual overrides for legacy misprints)
+        // Mantemos isto no controlador por simplicidade; caso cresça, migrar para tabela DB 'codigo_aliases'.
+        const HARDCODED_CODE_TO_PECAS = {
+            '001': ['TH2KQ', 'G2C79']
+        };
+
+        const HARDCODED_CODE_TO_REDIRECT_KEY = {
+            '002': 'H7BJX'
+        };
+
+        // Redirect on hardcoded single-key entries (ex: 002 -> H7BJX)
+        if (HARDCODED_CODE_TO_REDIRECT_KEY[codigoLegado]) {
+            return res.redirect(`/v/${HARDCODED_CODE_TO_REDIRECT_KEY[codigoLegado]}`);
+        }
+
+        // If this legacy code has a pre-approved list of piece keys, return only those
+        if (HARDCODED_CODE_TO_PECAS[codigoLegado]) {
+            const keys = HARDCODED_CODE_TO_PECAS[codigoLegado];
+            const placeholders = keys.map(() => '?').join(',');
+            const pecasPorCodigoHard = db.prepare(`
+                SELECT p.*, f.nome as figura_nome, f.slug as figura_slug, f.imagem_url
+                FROM pecas p
+                JOIN figuras f ON p.figura_id = f.id
+                WHERE p.chave_acesso IN (${placeholders})
+            `).all(...keys);
+
+            if (pecasPorCodigoHard.length === 1) {
+                return res.redirect(`/v/${pecasPorCodigoHard[0].chave_acesso}`);
+            }
+
+            // Deduplicate by figura_slug to present one option per figura
+            const uniq = [];
+            const seen = new Set();
+            for (const p of pecasPorCodigoHard) {
+                if (!seen.has(p.figura_slug)) {
+                    uniq.push(p);
+                    seen.add(p.figura_slug);
+                }
+            }
+
+            return res.render('pages/selecao-figura', {
+                title: 'Selecione a Figura',
+                codigo: codigoLegado,
+                pecas: uniq
+            });
+        }
+
         // Se passou pela trava, busca no banco
         const pecasPorCodigo = db.prepare(`
             SELECT p.*, f.nome as figura_nome, f.slug as figura_slug, f.imagem_url

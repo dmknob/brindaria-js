@@ -17,23 +17,10 @@ router.get('/sitemap.xml', publicController.getSitemap);
 // Ex: brindaria.com.br/v/K6RS9
 router.get('/v/:chave', publicController.getPecaByKey);
 
-// Rota Curta para Compartilhamento (Redirecionador Inteligente)
-// ex: brindaria.com.br/v/anjo-da-guarda/001 -> Redireciona para a URL longa canônica
-//router.get('/v/:slug/:codigo', (req, res) => {
-//    const { slug, codigo } = req.params;
-    // Aqui assumimos categoria "espiritual" por padrão ou buscamos no banco.
-    // Para simplificar V2, vamos hardcodar 'espiritual' ou buscar.
-    // Melhor: Redirecionar para URL longa.
-//    res.redirect(`/pecas/espiritual/${slug}/${codigo}`);
-//});
-
-// Rota Principal (Figuras e Peça)
-// O :codigo? com interrogação diz que é opcional
-
 // --- HARD REDIRECTS (CORREÇÃO DE QR-CODE) ---
 // Corrige links impressos com o slug antigo `sao-pedro` para a peça específica
 // (caso isolado): redireciona para a CHAVE de acesso da peça (QR Key).
-// Ex: /pecas/espiritual/sao-pedro/001 -> /v/6TPYK
+// Caso: /pecas/espiritual/sao-pedro/001 -> /v/6TPYK
 router.get('/pecas/espiritual/sao-pedro/:codigo?', (req, res) => {
     // Código antigo impresso errado: queremos apontar diretamente para a peça
     // correta usando sua chave (chave_acesso = 6TPYK).
