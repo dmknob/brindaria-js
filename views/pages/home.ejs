@@ -230,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 modal.innerHTML = `
                     <div class="relative max-w-4xl w-full mx-4">
                         <button id="atelieModalPrev" aria-label="Imagem anterior" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60 hidden md:inline-flex">◀</button>
-                        <button id="atelieModalClose" aria-label="Fechar galeria" class="absolute top-2 right-2 text-white p-1 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60">✕</button>
+                        <button id="atelieModalClose" aria-label="Fechar galeria" class="absolute top-2 right-2 text-white p-3 rounded-full z-60 bg-black bg-opacity-60 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-cyan-300">✕</button>
                         <button id="atelieModalNext" aria-label="Próxima imagem" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60 hidden md:inline-flex">▶</button>
                         <div class="bg-white rounded-lg p-4 shadow-lg max-h-[90vh] overflow-auto">
                             <img id="atelieModalImg" src="" alt="" class="w-full h-auto rounded-lg mx-auto max-h-[80vh] object-contain" />
@@ -317,6 +317,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (dx > 0) prevImage(); else nextImage();
                 }
             }, { passive: true });
+            // double-tap to close for convenience on touch devices
+            let lastTap = 0;
+            modalImg.addEventListener('touchstart', (ev) => {
+                const now = Date.now();
+                if (now - lastTap < 300) {
+                    // double-tap
+                    closeModal();
+                    lastTap = 0;
+                    ev.preventDefault();
+                    return;
+                }
+                lastTap = now;
+            }, { passive: true });
+            // double-click on desktop to close
+            modalImg.addEventListener('dblclick', (ev) => { closeModal(); });
             document.addEventListener('keydown', (ev) => {
                 if (modalEl.classList.contains('hidden')) return;
                 if (ev.key === 'Escape') return closeModal();
