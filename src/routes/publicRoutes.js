@@ -17,6 +17,9 @@ router.get('/sitemap.xml', publicController.getSitemap);
 // Ex: brindaria.com.br/v/K6RS9
 router.get('/v/:chave', publicController.getPecaByKey);
 
+// Ateliê gallery: returns 6 highlighted image objects (JSON)
+router.get('/atelie/gallery', publicController.getAtelieGallery);
+
 // --- HARD REDIRECTS (CORREÇÃO DE QR-CODE) ---
 // Corrige links impressos com o slug antigo `sao-pedro` para a peça específica
 // (caso isolado): redireciona para a CHAVE de acesso da peça (QR Key).

@@ -105,6 +105,14 @@
                     <img src="/images/ATELIE_001.jpg" alt="Protótipo do Anjo da Guarda no ateliê da Brindaria"
                         class="w-full h-auto object-cover rounded-lg shadow-lg border-4 border-white" loading="lazy">
                 </div>
+                
+                <!-- Ateliê gallery (on-demand) -->
+                <div class="mt-6 text-center">
+                    <button id="loadGalleryBtn" class="inline-flex items-center gap-2 bg-cyan-700 hover:bg-cyan-800 text-white font-bold py-2 px-4 rounded transition">
+                        Mostrar galeria
+                    </button>
+                    <div id="atelieGalleryGrid" class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-4 hidden"></div>
+                </div>
             </div>
         </section>
 
@@ -150,3 +158,180 @@
         </footer>
 
         <%- include('../layouts/layout-bottom', { hideFooter: true }) %>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('loadGalleryBtn');
+    const grid = document.getElementById('atelieGalleryGrid');
+    let loaded = false;
+    let loading = false; // to prevent concurrent fetches
+
+    // Prefetch on hover (small debounce) to improve perceived performance
+    let hoverTimer = null;
+    btn.addEventListener('pointerenter', () => {
+        if (!hoverTimer && !loaded && !loading) hoverTimer = setTimeout(() => { fetchGallery(); hoverTimer = null; }, 200);
+    });
+    btn.addEventListener('pointerleave', () => { if (hoverTimer) { clearTimeout(hoverTimer); hoverTimer = null; } });
+
+    btn.addEventListener('click', async (ev) => {
+        if (loaded) { btn.remove(); return; } // if already loaded by prefetch, just remove the CTA
+        btn.disabled = true;
+        btn.textContent = 'Carregando...';
+        await fetchGallery();
+        btn.remove();
+        // loaded will be set by fetchGallery if it succeeded
+    });
+
+    async function fetchGallery() {
+        if (loaded || loading) return; // prevent duplicate runs
+        loading = true;
+        try {
+            const resp = await fetch('/atelie/gallery');
+            if (!resp.ok) throw new Error('Falha ao carregar galeria');
+            const imgs = await resp.json();
+            grid.classList.remove('hidden');
+            // clear existing children to avoid duplicates in case this runs twice
+            grid.innerHTML = '';
+            // Store items in an array to allow modal prev/next navigation
+            const items = [];
+            imgs.forEach((i, idx) => {
+                const btnItem = document.createElement('button');
+                btnItem.type = 'button';
+                btnItem.className = 'block rounded-lg overflow-hidden group p-0 bg-transparent border-0';
+                btnItem.setAttribute('aria-label', i.alt || 'Ateliê imagem');
+                btnItem.dataset.index = idx;
+
+                const img = document.createElement('img');
+                img.loading = 'lazy';
+                img.decoding = 'async';
+                img.alt = i.alt || '';
+                img.src = i.src;
+                if (i.srcset) img.srcset = i.srcset;
+                img.className = 'w-full h-40 object-cover rounded-lg shadow-md';
+                btnItem.appendChild(img);
+                grid.appendChild(btnItem);
+
+                items.push(i);
+
+                // click opens modal
+                btnItem.addEventListener('click', (ev) => {
+                    ev.preventDefault();
+                    openModal(idx);
+                });
+            });
+
+            // Create modal overlay (hidden by default)
+            let modal = document.getElementById('atelieModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'atelieModal';
+                // Initially hidden and transparent; use transition for fade
+                modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden opacity-0 transition-opacity duration-200';
+                modal.innerHTML = `
+                    <div class="relative max-w-4xl w-full mx-4">
+                        <button id="atelieModalPrev" aria-label="Imagem anterior" class="absolute left-2 top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60 hidden md:inline-flex">◀</button>
+                        <button id="atelieModalClose" aria-label="Fechar galeria" class="absolute top-2 right-2 text-white p-1 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60">✕</button>
+                        <button id="atelieModalNext" aria-label="Próxima imagem" class="absolute right-2 top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full bg-black bg-opacity-40 hover:bg-opacity-60 hidden md:inline-flex">▶</button>
+                        <div class="bg-white rounded-lg p-4 shadow-lg max-h-[90vh] overflow-auto">
+                            <img id="atelieModalImg" src="" alt="" class="w-full h-auto rounded-lg mx-auto max-h-[80vh] object-contain" />
+                            <p id="atelieModalCaption" class="text-gray-700 mt-2 text-center text-sm"></p>
+                            <div class="text-center mt-3">
+                                <a id="atelieModalLink" href="#" target="_blank" class="inline-block text-sm text-cyan-700 hover:underline hidden">Ver página</a>
+                            </div>
+                        </div>
+                    </div>`;
+                document.body.appendChild(modal);
+            }
+
+            const modalEl = document.getElementById('atelieModal');
+            const modalImg = document.getElementById('atelieModalImg');
+            const modalCaption = document.getElementById('atelieModalCaption');
+            const modalClose = document.getElementById('atelieModalClose');
+            const modalLink = document.getElementById('atelieModalLink');
+            const modalPrev = document.getElementById('atelieModalPrev');
+            const modalNext = document.getElementById('atelieModalNext');
+            let currentIndex = 0;
+
+            function showIndex(idx) {
+                currentIndex = (idx + items.length) % items.length;
+                const it = items[currentIndex];
+                modalImg.src = it.full || it.src;
+                modalImg.alt = it.alt || '';
+                modalCaption.textContent = it.alt || '';
+                if (it.page) { modalLink.href = it.page; modalLink.classList.remove('hidden'); } else { modalLink.href = '#'; modalLink.classList.add('hidden'); }
+                if (modalPrev) modalPrev.classList.toggle('hidden', items.length <= 1);
+                if (modalNext) modalNext.classList.toggle('hidden', items.length <= 1);
+            }
+
+            function openModal(index) {
+                const item = items[index];
+                if (!item) return;
+                showIndex(index);
+                modalEl.classList.remove('hidden');
+                // Trigger transition (remove opacity-0 after a frame)
+                requestAnimationFrame(() => modalEl.classList.remove('opacity-0'));
+                document.body.classList.add('overflow-hidden');
+
+                // focus trap: move focus to close button
+                modalClose.focus();
+            }
+
+            function prevImage() { showIndex(currentIndex - 1); }
+            function nextImage() { showIndex(currentIndex + 1); }
+
+            function closeModal() {
+                // Fade out, then hide on transition end
+                modalEl.classList.add('opacity-0');
+                modalEl.addEventListener('transitionend', function handle() {
+                    modalEl.classList.add('hidden');
+                    modalImg.src = '';
+                    modalEl.removeEventListener('transitionend', handle);
+                });
+                document.body.classList.remove('overflow-hidden');
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            if (modalPrev) modalPrev.addEventListener('click', (e) => { e.preventDefault(); prevImage(); });
+            if (modalNext) modalNext.addEventListener('click', (e) => { e.preventDefault(); nextImage(); });
+            modalEl.addEventListener('click', (ev) => {
+                // clicking outside content closes modal
+                if (ev.target === modalEl) closeModal();
+            });
+            // Swipe support: track touch on the modal image
+            let startX = 0;
+            let startY = 0;
+            let startTime = 0;
+            modalImg.addEventListener('touchstart', (ev) => {
+                if (!ev.touches || !ev.touches[0]) return;
+                const t = ev.touches[0];
+                startX = t.clientX; startY = t.clientY; startTime = Date.now();
+            }, { passive: true });
+            modalImg.addEventListener('touchend', (ev) => {
+                const t = ev.changedTouches && ev.changedTouches[0];
+                if (!t) return;
+                const dx = t.clientX - startX;
+                const dy = t.clientY - startY;
+                const dt = Date.now() - startTime;
+                // Not a long multi-touch gesture; ensure mostly horizontal swipe and sufficient distance/speed
+                if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) && dt < 500) {
+                    if (dx > 0) prevImage(); else nextImage();
+                }
+            }, { passive: true });
+            document.addEventListener('keydown', (ev) => {
+                if (modalEl.classList.contains('hidden')) return;
+                if (ev.key === 'Escape') return closeModal();
+                if (ev.key === 'ArrowLeft') return prevImage();
+                if (ev.key === 'ArrowRight') return nextImage();
+            });
+            // mark as loaded after successfully populating grid
+            loading = false;
+            loaded = true;
+        } catch (e) {
+            console.error(e);
+            btn.disabled = false;
+            btn.textContent = 'Mostrar galeria';
+            loading = false;
+        }
+    }
+});
+</script>

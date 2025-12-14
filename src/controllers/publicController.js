@@ -57,6 +57,34 @@ const publicController = {
         res.send(xml);
     },
 
+    // Ateliê gallery (JSON): returns small set of images for the 'Mostrar galeria' feature
+    getAtelieGallery: (req, res) => {
+        // NOTE: These images are stored in public/images/atelie/ per the user instruction.
+        // Replace the file names with the actual filenames the admin will upload.
+        const imgs = [
+            { src: '/images/atelie/1.jpg', alt: "Estatueta com acabamento em bronze sobre uma prateleira de madeira, representando a figura alegórica do 'Self-Made Man': um homem a esculpir o seu próprio corpo a partir de um bloco de pedra bruta, empunhando um martelo e um cinzel. A base da peça é preta com a inscrição 'Ir.Terra'. À frente da escultura, encontra-se a palavra 'EVOLUÇÃO' em letras tridimensionais, também com acabamento em bronze." },
+            { src: '/images/atelie/2.jpg', alt: "Estatueta do Anjo da Guarda com acabamento branco brilhante, representado de joelhos a ler um livro aberto, com grandes asas detalhadas e uma coroa de flores na cabeça." },
+            { src: '/images/atelie/3.jpg', alt: "Estatueta de Jesus Cristo com acabamento branco perolado, de braços abertos e com uma pequena cruz dourada ao peito. A imagem ergue-se sobre uma base hexagonal com relevos de figuras humanas, assente num pedestal preto com a inscrição 'Acolhei teus Filhos' em dourado." },
+            { src: '/images/atelie/4.jpg', alt: "Estatueta de três pequenos monges com acabamento em bronze, sentados nas posições de não ver, não falar e não ouvir o mal. A base preta contém a inscrição 'O Segredo da Paz'." },
+            { src: '/images/atelie/5.jpg', alt: "Foto de uma escultura branca sobre uma base preta, retratando um homem musculoso esculpindo o próprio corpo para fora de um bloco de pedra bruta com um martelo e um cinzel (o conceito de 'Self-Made Man'). Na base da estátua, há uma placa com a inscrição 'Mestre de si' e, ao lado direito, o símbolo dourado do Esquadro e Compasso da Maçonaria. O fundo é um ambiente externo ensolarado e desfocado." },
+            { src: '/images/atelie/6.jpg', alt: "Foto de uma estátua de um anjo na cor branco perolado, sentado com um livro aberto no colo e asas estendidas nas costas. A escultura está sobre uma base retangular preta. Na frente da base, há uma inscrição em letras douradas que diz: 'Protegei a Cila e Família'. O fundo mostra um ambiente externo ensolarado e desfocado, com grades brancas verticais." }
+        ];
+
+        
+        // Provide srcset (optional) for responsive images if files exist with -400w / -800w suffix
+        const mapped = imgs.map(i => ({
+            src: i.src,
+            // Provide a full-size (or fallback) image reference for the modal
+            full: i.full || i.src,
+//            srcset: `${i.src.replace('.jpg','-400w.jpg')} 400w, ${i.src.replace('.jpg','-800w.jpg')} 800w`,
+            alt: i.alt,
+            page: i.page || null
+        }));
+        
+
+        res.json(mapped);
+    },
+
 
     // Rota: /pecas/:categoria/:slug/:codigo?
     getDetalhe: (req, res) => {
