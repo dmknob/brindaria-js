@@ -14,14 +14,17 @@
         <link rel="canonical" href="<%= canonical %>" />
     <% } %>
 
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+<!-- Google Analytics (Apenas para visitantes não logados) -->
+    <% if (!locals.isAdmin) { %>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
 
-      gtag('config', 'G-HED268W2BG');
-    </script>
+          gtag('config', 'G-HED268W2BG');
+        </script>
+    <% } %>
 
 </head>
 <body class="bg-gray-50 text-gray-800 font-sans antialiased flex flex-col min-h-screen">
