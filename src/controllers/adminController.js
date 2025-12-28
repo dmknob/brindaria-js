@@ -70,12 +70,14 @@ module.exports = {
         const totalPecas = db.prepare('SELECT COUNT(*) as count FROM pecas').get().count;
         const totalFiguras = db.prepare('SELECT COUNT(*) as count FROM figuras').get().count;
 
-        const ultimasVendas = db.prepare(`
+        const limitePecas = parseInt(process.env.PAGINACAO_PECAS, 10) || 8;
+        
+        const ultimasPecas = db.prepare(`
             SELECT p.*, f.nome as figura_nome, f.slug 
             FROM pecas p 
             JOIN figuras f ON p.figura_id = f.id 
-            ORDER BY p.id DESC LIMIT 8
-        `).all();
+            ORDER BY p.id DESC LIMIT ?
+        `).all(limitePecas);
 
         const chavesReserva = ensureReserveKeys(db, 10);
 
@@ -83,13 +85,13 @@ module.exports = {
             title: 'Painel Admin',
             totalPecas,
             totalFiguras,
-            ultimasVendas
+            ultimasPecas
         });
     },
 
-    // =========================================
-    // GESTÃO DE CATEGORIAS
-    // =========================================
+    // ==========================================
+    // GESTÃO DE CATEGORIAS - FALTA CONCLUIR CRUD
+    // ==========================================
 
     getCategorias: (req, res) => {
         const categorias = db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all();
@@ -125,7 +127,7 @@ module.exports = {
 
     getFiguras: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 8;
+        const limit = parseInt(process.env.PAGINACAO_FIGURAS, 10) || 9;
         const offset = (page - 1) * limit;
 
         const figuras = db.prepare(`
@@ -174,7 +176,7 @@ module.exports = {
         const ativo = ativo_check ? 1 : 0;
 
         try {
-            let finalImagePath = '/images/placeholder.jpg';
+            let finalImagePath = '/images/placeholder-brindaria.webp';
 
             if (imagem_url_externa && imagem_url_externa.trim() !== "") {
                 const ext = path.extname(imagem_url_externa.split('?')[0]) || '.jpg';
@@ -275,7 +277,7 @@ module.exports = {
 
     getPecas: (req, res) => {
         const page = parseInt(req.query.page) || 1;
-        const limit = 8;
+        const limit = parseInt(process.env.PAGINACAO_PECAS, 10) || 10;
         const offset = (page - 1) * limit;
         const filtroFigura = req.query.figura || '';
 

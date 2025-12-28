@@ -2,7 +2,7 @@
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const dbFileName = process.env.DB_FILE || 'brindaria.db';
+const dbFileName = process.env.DB_FILE;
 const dbPath = path.join(__dirname, '../', dbFileName);
 
 const db = new Database(dbPath, {

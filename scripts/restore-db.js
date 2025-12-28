@@ -10,7 +10,7 @@ if (!fs.existsSync(DUMP_FILE)) {
     process.exit(1);
 }
 
-console.log(`♻️  Iniciando Restauração V2.1...`);
+console.log(`♻️  Iniciando Restauração V2.2...`);
 
 const rawData = fs.readFileSync(DUMP_FILE, 'utf-8');
 const dump = JSON.parse(rawData);
@@ -52,8 +52,8 @@ const restore = db.transaction(() => {
     // 2. Inserção
     if (dump.tables.categorias) insertData('categorias', dump.tables.categorias);
     
-    // Importa Figuras (Aceita vindo de 'modelos' ou 'figuras')
-    const figurasData = dump.tables.figuras || dump.tables.modelos;
+    // Importa Figuras
+    const figurasData = dump.tables.figuras;
     if (figurasData) {
         // Se o JSON for antigo, não tem 'ativo'. O banco vai por 0 (default).
         // Vamos forçar ativo=1 se for migração de legado? 

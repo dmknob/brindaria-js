@@ -10,7 +10,7 @@ const { injectUserVar } = require('./src/middleware/auth');
 
 // Inicializa o App
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
 
 app.set('trust proxy', 1);
 // ---------------------------------------------------------
@@ -28,7 +28,7 @@ app.use(compression());
 // Helmet: Adiciona headers de segurança HTTP
 // Nota: Ajustamos a Content-Security-Policy para permitir imagens externas se necessário
 app.use(helmet({
-    contentSecurityPolicy: false, // Desativado temporariamente para facilitar dev (imagens externas)
+    contentSecurityPolicy: {reportOnly: true}, // Desativado temporariamente para facilitar dev (imagens externas)
 }));
 
 // Body Parser: Para ler dados de formulários (POST)
@@ -37,7 +37,7 @@ app.use(express.json());
 
 // Session: Necessário para o Login do Admin
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'segredo_temporario_dev',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { secure: process.env.NODE_ENV === 'production' } // Secure true apenas em HTTPS
@@ -77,7 +77,7 @@ app.locals.formatarData = (dataISO) => {
 // Serve a pasta 'public' com Cache de 1 dia (86400000 ms)
 // Isso faz o site carregar instantaneamente para quem volta
 app.use(express.static(path.join(__dirname, 'public'), {
-    maxAge: '1d', 
+    maxAge: '1h', // 1 hora de cache
     etag: false
 }));
 
@@ -113,6 +113,6 @@ app.use((err, req, res, next) => {
 // 6. Inicialização
 // ---------------------------------------------------------
 app.listen(PORT, () => {
-    console.log(`🔥 Servidor Brindaria V2 rodando em: http://localhost:${PORT}`);
-    console.log(`🔧 Modo: ${process.env.NODE_ENV || 'development'}`);
+    console.log(`🔥 Servidor Brindaria V2.2 rodando em: http://localhost:${PORT}`);
+    console.log(`🔧 Modo: ${process.env.NODE_ENV}`);
 });

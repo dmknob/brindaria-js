@@ -10,14 +10,14 @@ if (!fs.existsSync(SEEDS_DIR)) {
     fs.mkdirSync(SEEDS_DIR, { recursive: true });
 }
 
-console.log(`📦 Iniciando Dump do banco de dados (V2.1)...`);
+console.log(`📦 Iniciando Dump do banco de dados (V2.2)...`);
 
 try {
     const data = {
         metadata: {
             timestamp: new Date().toISOString(),
-            source_env: process.env.NODE_ENV || 'development',
-            version: '2.1'
+            source_env: process.env.NODE_ENV,
+            version: '2.2'
         },
         tables: {}
     };

@@ -5,7 +5,7 @@ const fs = require('fs');
 const Database = require('better-sqlite3');
 
 // --- ALTERAÇÃO: Ler o nome do banco do .env ---
-const dbFileName = process.env.DB_FILE || 'brindaria.db';
+const dbFileName = process.env.DB_FILE;
 const DB_PATH = path.join(__dirname, '../', dbFileName);
 const BACKUP_DIR = path.join(__dirname, '../backups');
 

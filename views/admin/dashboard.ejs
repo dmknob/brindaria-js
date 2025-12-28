@@ -65,12 +65,12 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                <% if (ultimasVendas.length === 0) { %>
+                <% if (ultimasPecas.length === 0) { %>
                     <tr>
                         <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Nenhuma peça registrada ainda.</td>
                     </tr>
                 <% } %>
-                <% ultimasVendas.forEach(peca => { %>
+                <% ultimasPecas.forEach(peca => { %>
                 <tr class="hover:bg-gray-50 transition">
                     <td class="px-6 py-4 whitespace-nowrap font-mono text-sm font-bold text-amber-600">
                         <% if (peca.codigo_exibicao) { %>

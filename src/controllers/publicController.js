@@ -4,11 +4,11 @@ const db = require('../../database/db');
 const publicController = {
 
     getHome: (req, res) => {
-        const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT 20').all();
+        //const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT 20').all();
 
         res.render('pages/home', {
             title: 'Brindaria - Arte Sacra e Presentes',
-            figuras: figuras, 
+            //figuras: figuras, 
             canonical: 'https://brindaria.com.br'
         });
     },
@@ -21,14 +21,44 @@ const publicController = {
     },
 
     getCatalogo: (req, res) => {
-        const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC').all();
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(process.env.PAGINACAO_FIGURAS, 10) || 9;
+        const offset = (page - 1) * limit;
 
+        const figuras = db.prepare(`SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT ? OFFSET ?
+        `).all(limit, offset);
+        //const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC').all();
+
+        const total = db.prepare('SELECT COUNT(*) as count FROM figuras').get().count;
+        const totalPages = Math.ceil(total / limit);
+
+        //const categorias = db.prepare('SELECT id, nome FROM categorias').all();
+        // Full list used for quick-select dropdown in admin UI
+        //const figurasAll = db.prepare('SELECT id, nome FROM figuras ORDER BY nome ASC').all();
+        //const catMap = {};
+        //categorias.forEach(c => catMap[c.id] = c.nome);
+
+        let canonical = 'https://brindaria.com.br/pecas';
+        if (page > 1) {
+            canonical = 'https://brindaria.com.br/pecas?page=' + page;
+        }
+
+        res.render('pages/colecao', {
+            title: 'Nossa Coleção - Brindaria',
+            description: 'Conheça nosso acervo de arte sacra e imagens personalizadas.',
+            figuras: figuras,
+            currentPage: page,
+            totalPages,
+            canonical: canonical
+        });
+/*
         res.render('pages/colecao', {
             title: 'Nossa Coleção - Brindaria',
             description: 'Conheça nosso acervo de arte sacra e imagens personalizadas.',
             figuras: figuras, 
             canonical: 'https://brindaria.com.br/pecas'
         });
+*/
     },
 
     getSitemap: (req, res) => {
@@ -62,12 +92,12 @@ const publicController = {
         // NOTE: These images are stored in public/images/atelie/ per the user instruction.
         // Replace the file names with the actual filenames the admin will upload.
         const imgs = [
-            { src: '/images/atelie/1.jpg', alt: "Estatueta com acabamento em bronze sobre uma prateleira de madeira, representando a figura alegórica do 'Self-Made Man': um homem a esculpir o seu próprio corpo a partir de um bloco de pedra bruta, empunhando um martelo e um cinzel. A base da peça é preta com a inscrição 'Ir.Terra'. À frente da escultura, encontra-se a palavra 'EVOLUÇÃO' em letras tridimensionais, também com acabamento em bronze." },
-            { src: '/images/atelie/2.jpg', alt: "Estatueta do Anjo da Guarda com acabamento branco brilhante, representado de joelhos a ler um livro aberto, com grandes asas detalhadas e uma coroa de flores na cabeça." },
-            { src: '/images/atelie/3.jpg', alt: "Estatueta de Jesus Cristo com acabamento branco perolado, de braços abertos e com uma pequena cruz dourada ao peito. A imagem ergue-se sobre uma base hexagonal com relevos de figuras humanas, assente num pedestal preto com a inscrição 'Acolhei teus Filhos' em dourado." },
-            { src: '/images/atelie/4.jpg', alt: "Estatueta de três pequenos monges com acabamento em bronze, sentados nas posições de não ver, não falar e não ouvir o mal. A base preta contém a inscrição 'O Segredo da Paz'." },
-            { src: '/images/atelie/5.jpg', alt: "Foto de uma escultura branca sobre uma base preta, retratando um homem musculoso esculpindo o próprio corpo para fora de um bloco de pedra bruta com um martelo e um cinzel (o conceito de 'Self-Made Man'). Na base da estátua, há uma placa com a inscrição 'Mestre de si' e, ao lado direito, o símbolo dourado do Esquadro e Compasso da Maçonaria. O fundo é um ambiente externo ensolarado e desfocado." },
-            { src: '/images/atelie/6.jpg', alt: "Foto de uma estátua de um anjo na cor branco perolado, sentado com um livro aberto no colo e asas estendidas nas costas. A escultura está sobre uma base retangular preta. Na frente da base, há uma inscrição em letras douradas que diz: 'Protegei a Cila e Família'. O fundo mostra um ambiente externo ensolarado e desfocado, com grades brancas verticais." }
+            { src: '/images/atelie/ATELIE_1-brindaria.webp', alt: "Estatueta com acabamento em bronze sobre uma prateleira de madeira, representando a figura alegórica do 'Self-Made Man': um homem a esculpir o seu próprio corpo a partir de um bloco de pedra bruta, empunhando um martelo e um cinzel. A base da peça é preta com a inscrição 'Ir.Terra'. À frente da escultura, encontra-se a palavra 'EVOLUÇÃO' em letras tridimensionais, também com acabamento em bronze." },
+            { src: '/images/atelie/ATELIE_2-brindaria.webp', alt: "Estatueta do Anjo da Guarda com acabamento branco brilhante, representado de joelhos a ler um livro aberto, com grandes asas detalhadas e uma coroa de flores na cabeça." },
+            { src: '/images/atelie/ATELIE_3-brindaria.webp', alt: "Estatueta de Jesus Cristo com acabamento branco perolado, de braços abertos e com uma pequena cruz dourada ao peito. A imagem ergue-se sobre uma base hexagonal com relevos de figuras humanas, assente num pedestal preto com a inscrição 'Acolhei teus Filhos' em dourado." },
+            { src: '/images/atelie/ATELIE_4-brindaria.webp', alt: "Estatueta de três pequenos monges com acabamento em bronze, sentados nas posições de não ver, não falar e não ouvir o mal. A base preta contém a inscrição 'O Segredo da Paz'." },
+            { src: '/images/atelie/ATELIE_5-brindaria.webp', alt: "Foto de uma escultura branca sobre uma base preta, retratando um homem musculoso esculpindo o próprio corpo para fora de um bloco de pedra bruta com um martelo e um cinzel (o conceito de 'Self-Made Man'). Na base da estátua, há uma placa com a inscrição 'Mestre de si' e, ao lado direito, o símbolo dourado do Esquadro e Compasso da Maçonaria. O fundo é um ambiente externo ensolarado e desfocado." },
+            { src: '/images/atelie/ATELIE_6-brindaria.webp', alt: "Foto de uma estátua de um anjo na cor branco perolado, sentado com um livro aberto no colo e asas estendidas nas costas. A escultura está sobre uma base retangular preta. Na frente da base, há uma inscrição em letras douradas que diz: 'Protegei a Cila e Família'. O fundo mostra um ambiente externo ensolarado e desfocado, com grades brancas verticais." }
         ];
 
         
