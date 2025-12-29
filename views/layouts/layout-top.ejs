@@ -19,9 +19,9 @@
         <link rel="canonical" href="<%= canonical %>" />
     <% } %>
 
-<!-- Google Analytics (Apenas para visitantes não logados) -->
     <% if (!locals.isAdmin) { %>
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG"></script>
+    <!-- Google Analytics (Apenas para visitantes não logados) -->
+         <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}

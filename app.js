@@ -25,11 +25,14 @@ app.set('views', path.join(__dirname, 'views'));
 // Compression: Comprime o HTML/CSS enviado (GZIP), vital para velocidade
 app.use(compression());
 
+/*
 // Helmet: Adiciona headers de segurança HTTP
 // Nota: Ajustamos a Content-Security-Policy para permitir imagens externas se necessário
 app.use(helmet({
     contentSecurityPolicy: {reportOnly: true}, // Desativado temporariamente para facilitar dev (imagens externas)
 }));
+*/
+app.use(helmet());
 
 // Body Parser: Para ler dados de formulários (POST)
 app.use(express.urlencoded({ extended: true }));

@@ -21,9 +21,9 @@
                     <a href="/pecas/espiritual/<%= figura.slug %>" class="group block bg-white rounded-xl shadow-sm hover:shadow-xl transition duration-300 overflow-hidden border border-gray-200">
                         <div class="relative h-72 w-full bg-gray-100 overflow-hidden">
                             <img src="<%= figura.imagem_url || '/images/placeholder-brindaria.webp' %>" 
-                                 alt="<%= figura.conhecido_como %>" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition duration-700">
-                            
+                                alt="<%= figura.conhecido_como %>" 
+                                class="w-full object-cover group-hover:scale-105 transition duration-700" fetchpriority="high" loading="eager">
+                                <!-- class="w-full h-full object-cover group-hover:scale-105 transition duration-700" fetchpriority="high" loading="eager"> -->
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/0 transition"></div>
                         </div>
                         
