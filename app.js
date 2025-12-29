@@ -77,8 +77,8 @@ app.locals.formatarData = (dataISO) => {
 // Serve a pasta 'public' com Cache de 1 dia (86400000 ms)
 // Isso faz o site carregar instantaneamente para quem volta
 app.use(express.static(path.join(__dirname, 'public'), {
-    maxAge: '1h', // 1 hora de cache
-    etag: false
+    maxAge: '1d', // 1 dia de cache
+    etag: true, // Habilita ETag para melhorar o cache
 }));
 
 // ---------------------------------------------------------
