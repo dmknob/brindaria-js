@@ -155,6 +155,7 @@ const publicController = {
         let peca = null;
         let pageTitle = figura.nome;
         let canonical = `https://brindaria.com.br/pecas/${figuraCategoriaSlug}/${slug}`;
+        console.warn("CANONICAL: ",canonical);
         let metaDescription = figura.subtitulo || `Conheça a história de ${figura.nome}`;
 
         if (codigo) {
@@ -180,7 +181,11 @@ const publicController = {
             peca,
             title: pageTitle,
             description: metaDescription,
-            canonical: peca ? canonical : null
+            canonical: canonical,
+            ogTitle: pageTitle,
+            ogDescription: metaDescription,
+            ogURL: canonical,
+            ogImage: figura.imagem_url
         });
     },
 

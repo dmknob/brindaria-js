@@ -9,14 +9,27 @@
     <!-- Otimização de carregamento -->
     <link rel=preconnect href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
-    <!-- Otimização de carregamento -->
 
     <link rel="stylesheet" href="/css/styles.css" fetchpriority="high" loading="eager">
     
     <link rel="icon" type="image/png" href="/images/ICONE-brindaria.webp">
 
     <% if (locals.canonical) { %>
-        <link rel="canonical" href="<%= canonical %>" />
+        <link rel="canonical" href="<%= locals.canonical %>" />
+    <% } %>
+
+    <!-- Meta Tags -->
+    <% if (locals.ogTitle) { %>
+        <meta property="og:title" content="<%= locals.ogTitle %>" />
+    <% } %>
+    <% if (locals.ogDescription) { %>
+        <meta property="og:description" content="<%= locals.ogDescription %>" />
+    <% } %>
+    <% if (locals.ogImage) { %>
+        <meta property="og:image" content="<%= locals.ogImage %>" />
+    <% } %>
+     <% if (locals.ogURL) { %>
+        <meta property="og:url" content="<%= locals.canonical %>" />
     <% } %>
 
     <% if (!locals.isAdmin) { %>
