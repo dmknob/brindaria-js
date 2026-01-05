@@ -7,19 +7,31 @@ const publicController = {
     getHome: (req, res) => {
         logger.info("Home page accessed");
 
+        const title = 'Brindaria: Espiritualidade e Respeito';
+        const canonical = 'https://brindaria.com.br';
         res.render('pages/home', {
-            title: 'Brindaria - Arte Sacra e Presentes',
-            canonical: 'https://brindaria.com.br'
+            title: title,
+            canonical: canonical,
+            ogTitle: title,
+            ogDescription: "Descubra a Brindaria: arte sacra, imagens personalizadas e presentes únicos para todas as ocasiões.",
+            ogURL: canonical,
+            ogImage: '/images/FOTO_FAMILIA-brindaria.webp'
     });
-        
     },
 
     getContato: (req, res) => {
         logger.info("Contato page accessed");
 
+        const title = 'Contato - Vamos Conversar?';
+        const canonical = 'https://brindaria.com.br/contato';
+        
         res.render('pages/contato', {
-            title: 'Contato - Vamos Conversar?',
-            canonical: 'https://brindaria.com.br/contato'
+            title: title,
+            canonical: canonical,
+            ogTitle: title,
+            ogDescription: "Entre em contato com a Brindaria para dúvidas, orçamentos ou informações sobre nossos produtos e serviços.",
+            ogURL: canonical,
+            ogImage: '/images/FOTO_FAMILIA-brindaria.webp'
         });
     },
 
@@ -48,13 +60,20 @@ const publicController = {
 
         logger.info("Catalogo page accessed", canonical);
 
+        const title = 'Nossa Coleção - Brindaria';
+        const description = 'Conheça nosso acervo de arte sacra e imagens personalizadas.';
+
         res.render('pages/colecao', {
-            title: 'Nossa Coleção - Brindaria',
-            description: 'Conheça nosso acervo de arte sacra e imagens personalizadas.',
+            title: title,
+            description: description,
             figuras: figuras,
             currentPage: page,
             totalPages,
-            canonical: canonical
+            canonical: canonical,
+            ogTitle: title,
+            ogDescription: description,
+            ogURL: canonical,
+            ogImage: '/images/ATELIE_principal-brindaria.webp'
         });
 /*
         res.render('pages/colecao', {
@@ -183,7 +202,7 @@ const publicController = {
             description: metaDescription,
             canonical: canonical,
             ogTitle: pageTitle,
-            ogDescription: metaDescription,
+            ogDescription: figura.conhecido_como || metaDescription,
             ogURL: canonical,
             ogImage: figura.imagem_url
         });
@@ -245,8 +264,11 @@ const publicController = {
             description: `Verificação de autenticidade`,
             figura,
             peca,
-            canonical
-        });
+            canonical,
+            ogTitle: peca.inscricao_base || `Peça ${peca.codigo_exibicao} - ${figura.nome}`,
+            ogDescription: peca.mensagem,
+            ogURL: canonical,
+            ogImage: figura.imagem_url        });
     },
 
     // Validação de Peça (Busca por Código ou Chave)
