@@ -199,7 +199,7 @@ const publicController = {
             figura: figura, 
             peca,
             title: pageTitle,
-            description: metaDescription,
+            description: figura.conhecido_como || metaDescription,
             canonical: canonical,
             ogTitle: pageTitle,
             ogDescription: figura.conhecido_como || metaDescription,
