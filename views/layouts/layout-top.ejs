@@ -12,7 +12,7 @@
 
     <link rel="stylesheet" href="/css/styles.css" fetchpriority="high" loading="eager">
     
-    <link rel="icon" type="image/png" href="/images/ICONE-brindaria.webp">
+    <link rel="icon" type="image/webp" href="/images/ICONE-brindaria.webp">
 
     <% if (locals.canonical) { %>
         <link rel="canonical" href="<%= locals.canonical %>" />
@@ -38,13 +38,16 @@
     <% if (!locals.isAdmin) { %>
     <!-- Google Analytics (Apenas para visitantes não logados) -->
          <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG" fetchpriority="low" loading="lazy"></script>
-        <script>
+        <script fetchpriority="low" loading="lazy">
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
 
           gtag('config', 'G-HED268W2BG');
         </script>
+
+    <!-- Verificaçao Facebook-->
+    <meta name="facebook-domain-verification" content="evcdhkwa2la1esd0452n0b6vprrog9" />
     <% } %>
 
 </head>
