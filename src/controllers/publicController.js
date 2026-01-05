@@ -15,7 +15,7 @@ const publicController = {
             ogTitle: title,
             ogDescription: "Descubra a Brindaria: arte sacra, imagens personalizadas e presentes únicos para todas as ocasiões.",
             ogURL: canonical,
-            ogImage: '/images/FOTO_FAMILIA-brindaria.webp'
+            ogImage: 'https://brindaria.com.br/images/FOTO_FAMILIA-brindaria.webp'
     });
     },
 
@@ -31,7 +31,7 @@ const publicController = {
             ogTitle: title,
             ogDescription: "Entre em contato com a Brindaria para dúvidas, orçamentos ou informações sobre nossos produtos e serviços.",
             ogURL: canonical,
-            ogImage: '/images/FOTO_FAMILIA-brindaria.webp'
+            ogImage: 'https://brindaria.com.br/images/FOTO_FAMILIA-brindaria.webp'
         });
     },
 
@@ -73,7 +73,7 @@ const publicController = {
             ogTitle: title,
             ogDescription: description,
             ogURL: canonical,
-            ogImage: '/images/ATELIE_principal-brindaria.webp'
+            ogImage: 'https://brindaria.com.br/images/ATELIE_principal-brindaria.webp'
         });
 /*
         res.render('pages/colecao', {
