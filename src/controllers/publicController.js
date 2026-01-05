@@ -1,19 +1,22 @@
 // src/controllers/publicController.js
 const db = require('../../database/db');
+const logger = require('../logger');
 
 const publicController = {
 
     getHome: (req, res) => {
-        //const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT 20').all();
+        logger.info("Home page accessed");
 
         res.render('pages/home', {
             title: 'Brindaria - Arte Sacra e Presentes',
-            //figuras: figuras, 
             canonical: 'https://brindaria.com.br'
-        });
+    });
+        
     },
 
     getContato: (req, res) => {
+        logger.info("Contato page accessed");
+
         res.render('pages/contato', {
             title: 'Contato - Vamos Conversar?',
             canonical: 'https://brindaria.com.br/contato'
@@ -43,6 +46,8 @@ const publicController = {
             canonical = 'https://brindaria.com.br/pecas?page=' + page;
         }
 
+        logger.info("Catalogo page accessed", canonical);
+
         res.render('pages/colecao', {
             title: 'Nossa Coleção - Brindaria',
             description: 'Conheça nosso acervo de arte sacra e imagens personalizadas.',
@@ -62,6 +67,9 @@ const publicController = {
     },
 
     getSitemap: (req, res) => {
+
+        logger.info("Sitemap requested");
+
         const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
         const baseUrl = 'https://brindaria.com.br';
 
@@ -71,7 +79,7 @@ const publicController = {
             <url><loc>${baseUrl}/contato</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
             <url><loc>${baseUrl}/pecas</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
         `;
-
+        // INCLUIR LOGICA DE PAGINAÇÃO NA GERAÇÃO DO SITEMAP DESTA SEÇÃO
         figuras.forEach(f => {
             xml += `
             <url>
@@ -89,6 +97,9 @@ const publicController = {
 
     // Ateliê gallery (JSON): returns small set of images for the 'Mostrar galeria' feature
     getAtelieGallery: (req, res) => {
+
+        logger.info("Imagens Atelie gallery requested");
+                            
         // NOTE: These images are stored in public/images/atelie/ per the user instruction.
         // Replace the file names with the actual filenames the admin will upload.
         const imgs = [
@@ -111,13 +122,15 @@ const publicController = {
             page: i.page || null
         }));
         
-
         res.json(mapped);
     },
 
 
     // Rota: /pecas/:categoria/:slug/:codigo?
     getDetalhe: (req, res) => {
+
+        logger.info("Peca detalhe page accessed", { params: req.params });
+
         const { categoria, slug, codigo } = req.params;
 
         // Também selecionamos a categoria slug para validar que a rota usa a categoria correta
@@ -175,6 +188,8 @@ const publicController = {
     getPecaByKey: (req, res) => {
         const { chave } = req.params;
         
+        logger.info("Peca validation requested", { chave: chave });
+
         const dados = db.prepare(`
             SELECT p.*, 
                    f.nome, f.subtitulo, f.slug as figura_slug, f.colecao, f.imagem_url,
@@ -232,6 +247,8 @@ const publicController = {
     // Validação de Peça (Busca por Código ou Chave)
     postValidarPeca: (req, res) => {
         let { codigo } = req.body;
+
+        logger.info("Peca validation attempted", { codigo: codigo });
 
         if (!codigo) {
             return res.redirect('/');

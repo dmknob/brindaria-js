@@ -7,17 +7,23 @@ const helmet = require('helmet');
 const session = require('express-session');
 
 const { injectUserVar } = require('./src/middleware/auth');
+const morgan = require('morgan');
+const logger = require('./src/logger');
 
 // Inicializa o App
 const app = express();
 const PORT = process.env.PORT;
 
-app.set('trust proxy', 1);
+app.set('trust proxy', 1); // Para HTTPS (se estiver atrás de um proxy reverso)
+
 // ---------------------------------------------------------
 // 1. Configurações de View Engine (EJS)
 // ---------------------------------------------------------
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+app.disable('x-powered-by')
+
 
 // ---------------------------------------------------------
 // 2. Middlewares Globais (Segurança e Performance)
@@ -25,9 +31,15 @@ app.set('views', path.join(__dirname, 'views'));
 // Compression: Comprime o HTML/CSS enviado (GZIP), vital para velocidade
 app.use(compression());
 
+app.use(helmet.hsts({
+    maxAge: 31536000, // 1 ano em segundos
+    includeSubDomains: true,
+    preload: true
+}));
 
 // Helmet: Adiciona headers de segurança HTTP
 // Nota: Ajustamos a Content-Security-Policy para permitir imagens externas se necessário
+/*
 app.use(helmet.contentSecurityPolicy({
     directives: {
         defaultSrc: ["'self'"],
@@ -49,7 +61,7 @@ app.use(helmet.contentSecurityPolicy({
         ]
     }
 }));
-
+*/
 //app.use(helmet());
 
 // Body Parser: Para ler dados de formulários (POST)
@@ -65,6 +77,21 @@ app.use(session({
 }));
 
 app.use(injectUserVar);
+
+// Separate route logs from asset logs (CSS/JS/images)
+const assetsRegex = /\.(?:css|js|map|png|jpe?g|webp|svg|ico|woff2?|woff|ttf)(?:[?#].*)?$/i;
+
+// Routes: skip asset requests
+app.use(morgan(process.env.MORGAN_FORMAT_ROUTES || process.env.MORGAN_FORMAT || 'combined', {
+    stream: logger.stream,
+    skip: (req) => assetsRegex.test(req.path)
+}));
+
+// Assets: only log asset requests
+app.use(morgan(process.env.MORGAN_FORMAT_ASSETS || ':method :url :status :res[content-length] - :response-time ms', {
+    stream: logger.assetsStream,
+    skip: (req) => !assetsRegex.test(req.path)
+}));
 
 // --- HELPER GLOBAL PARA DATAS (ATUALIZADO V2.1) ---
 // Suporta YYYY-MM (Mês/Ano) e YYYY-MM-DD (Data Completa)
@@ -126,7 +153,7 @@ app.use((req, res, next) => {
 
 // Middleware para erros de servidor (500)
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log do erro no terminal para você ver
+    logger.error('Unhandled error', { message: err.message, stack: err.stack, method: req.method, url: req.originalUrl });
     res.status(500).render('pages/500', { title: 'Erro Interno' });
 });
 
@@ -134,6 +161,6 @@ app.use((err, req, res, next) => {
 // 6. Inicialização
 // ---------------------------------------------------------
 app.listen(PORT, () => {
-    console.log(`🔥 Servidor Brindaria V2.2 rodando em: http://localhost:${PORT}`);
-    console.log(`🔧 Modo: ${process.env.NODE_ENV}`);
+    logger.info(`🔥 Servidor Brindaria V2.2 rodando em: http://localhost:${PORT}`);
+    logger.info(`🔧 Modo: ${process.env.NODE_ENV}`);
 });

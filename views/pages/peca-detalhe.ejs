@@ -63,8 +63,10 @@
                     <div class="md:sticky md:top-8 transition-all duration-500">
                         <div
                             class="rounded-xl overflow-hidden shadow-2xl border-4 border-white bg-gray-100 relative group">
-                            <img src="<%= figura.imagem_url || '/images/placeholder-brindaria.webp' %>" alt="<%= figura.nome %>"
-                                class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700">
+                            <img src="<%= figura.imagem_url || '/images/placeholder-brindaria.webp' %>"
+                                alt="<%= figura.nome %>"
+                                class="w-full h-auto object-cover transform group-hover:scale-105 transition duration-700"
+                                fetchpriority="high" loading="eager">
                         </div>
 
                         <div class="mt-6 text-center no-print">
@@ -108,7 +110,7 @@
                         </h1>
                         <% if (figura.subtitulo) { %>
                             <h2 class="text-xl text-cyan-700 italic font-serif"><%- figura.subtitulo %></h2>
-                            <% } %>
+                        <% } %>
                     </div>
                     <% if (peca) { %>
                         <section class="mt-12 bg-cyan-50 border-2 border-cyan-200 rounded-xl p-8 shadow-sm relative overflow-hidden scroll-mt-24">

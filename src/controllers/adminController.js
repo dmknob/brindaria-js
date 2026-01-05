@@ -1,11 +1,13 @@
 // src/controllers/adminController.js
 const db = require('../../database/db');
 const auth = require('../middleware/auth');
+//const logger = require('../logger');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const slugify = require('slugify');
 const { ensureReserveKeys, generateUniqueKey } = require('../utils/keyGenerator');
+const { log } = require('console');
 
 // --- FUNÇÕES AUXILIARES ---
 
@@ -42,10 +44,15 @@ module.exports = {
     // =========================================
 
     getLogin: (req, res) => {
+
+        //logger.info("Admin login page accessed");
+
         res.render('admin/login', { title: 'Acesso Restrito', error: null });
     },
 
     postLogin: (req, res) => {
+        //logger.info("Admin login attempt", { ip: req.ip });
+
         const { password } = req.body;
         if (auth.checkPassword(password)) {
             req.session.admin = true;
@@ -58,6 +65,8 @@ module.exports = {
     },
 
     logout: (req, res) => {
+        logger.info("Admin logged out", { ip: req.ip });
+
         req.session.destroy();
         res.redirect('/');
     },
@@ -67,6 +76,9 @@ module.exports = {
     // =========================================
 
     getDashboard: (req, res) => {
+
+        //logger.info("Admin dashboard accessed");
+
         const totalPecas = db.prepare('SELECT COUNT(*) as count FROM pecas').get().count;
         const totalFiguras = db.prepare('SELECT COUNT(*) as count FROM figuras').get().count;
 
@@ -94,6 +106,9 @@ module.exports = {
     // ==========================================
 
     getCategorias: (req, res) => {
+
+        //logger.info("Admin categorias page accessed");
+
         const categorias = db.prepare('SELECT * FROM categorias ORDER BY nome ASC').all();
         
         const contagem = db.prepare('SELECT categoria_id, COUNT(*) as total FROM figuras GROUP BY categoria_id').all();
@@ -108,6 +123,9 @@ module.exports = {
     },
 
     postNovaCategoria: (req, res) => {
+
+        //logger.info("Admin creating new categoria", { nome: req.body.nome });
+
         const { nome } = req.body;
         const slug = slugify(nome, { lower: true, strict: true });
 
@@ -126,6 +144,9 @@ module.exports = {
     // =========================================
 
     getFiguras: (req, res) => {
+
+        //logger.info("Admin figuras page accessed", { query: req.query });
+            
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(process.env.PAGINACAO_FIGURAS, 10) || 9;
         const offset = (page - 1) * limit;
@@ -145,6 +166,8 @@ module.exports = {
         const catMap = {};
         categorias.forEach(c => catMap[c.id] = c.nome);
 
+        console.log("Figuras All: ", figurasAll);
+
         res.render('admin/lista-figuras', {
             title: 'Gerenciar Figuras',
             figuras,
@@ -156,6 +179,9 @@ module.exports = {
     },
 
     getNovaFigura: (req, res) => {
+
+        //logger.info("Admin new figura page accessed");
+
         const categorias = db.prepare('SELECT * FROM categorias').all();
         res.render('admin/form-figura', {
             title: 'Nova Figura',
@@ -165,6 +191,9 @@ module.exports = {
     },
 
     postNovaFigura: async (req, res) => {
+
+        //logger.info("Admin creating new figura", { nome: req.body.nome });
+
         const {
             nome, categoria_id, subtitulo, colecao,
             conhecido_como, dia_celebracao, invocado_para, locais_devocao, variacoes_nome,
@@ -208,6 +237,9 @@ module.exports = {
     },
 
     getEditarFigura: (req, res) => {
+
+        //logger.info("Admin editing figura page accessed", { id: req.params.id });
+
         const { id } = req.params;
         const figura = db.prepare('SELECT * FROM figuras WHERE id = ?').get(id);
         const categorias = db.prepare('SELECT * FROM categorias').all();
@@ -222,6 +254,9 @@ module.exports = {
     },
 
     postEditarFigura: async (req, res) => {
+
+        //logger.info("Admin updating figura", { id: req.params.id, nome: req.body.nome });
+
         const { id } = req.params;
         const {
             nome, categoria_id, subtitulo, colecao,
@@ -268,6 +303,26 @@ module.exports = {
         } catch (err) {
             console.error(err);
             res.status(500).send("Erro ao editar figura: " + err.message);
+        }
+    },
+
+    postDeletarFigura: (req, res) => {
+        try {
+            const { id } = req.params;
+
+            // Verifica se existem peças vinculadas a esta figura
+            const linkedCount = db.prepare('SELECT COUNT(*) as count FROM pecas WHERE figura_id = ?').get(id).count;
+            if (linkedCount > 0) {
+                console.warn(`Tentativa de excluir figura ${id} com ${linkedCount} peça(s) vinculada(s)`);
+                // Redireciona com flag de erro para que a UI possa exibir uma mensagem amigável
+                return res.redirect('/admin/figuras?error=linked');
+            }
+
+            db.prepare('DELETE FROM figuras WHERE id = ?').run(id);
+            res.redirect('/admin/figuras');
+        } catch (err) {
+            console.error(err);
+            res.status(500).send("Erro ao excluir figura: " + err.message);
         }
     },
 

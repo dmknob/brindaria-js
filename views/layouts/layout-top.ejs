@@ -11,9 +11,9 @@
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <!-- Otimização de carregamento -->
 
+    <link rel="stylesheet" href="/css/styles.css" fetchpriority="high" loading="eager">
+    
     <link rel="icon" type="image/png" href="/images/ICONE-brindaria.webp">
-
-    <link rel="stylesheet" href="/css/styles.css">
 
     <% if (locals.canonical) { %>
         <link rel="canonical" href="<%= canonical %>" />
@@ -21,7 +21,7 @@
 
     <% if (!locals.isAdmin) { %>
     <!-- Google Analytics (Apenas para visitantes não logados) -->
-         <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG"></script>
+         <script async src="https://www.googletagmanager.com/gtag/js?id=G-HED268W2BG" fetchpriority="low" loading="lazy"></script>
         <script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}

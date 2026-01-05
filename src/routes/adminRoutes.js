@@ -52,6 +52,7 @@ router.get('/figuras/novo', adminController.getNovaFigura); // Atenção: /novo 
 router.post('/figuras/novo', adminController.postNovaFigura);
 router.get('/figuras/:id/editar', adminController.getEditarFigura);
 router.post('/figuras/:id/editar', adminController.postEditarFigura);
+router.post('/figuras/:id/delete', adminController.postDeletarFigura);
 
 // --- PEÇAS ---
 router.get('/pecas', adminController.getPecas);
