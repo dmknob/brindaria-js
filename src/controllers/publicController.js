@@ -204,7 +204,7 @@ const publicController = {
             ogTitle: pageTitle,
             ogDescription: figura.conhecido_como || metaDescription,
             ogURL: canonical,
-            ogImage: figura.imagem_url
+            ogImage: 'https://brindaria.com.br' + figura.imagem_url
         });
     },
 
