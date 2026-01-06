@@ -1,4 +1,4 @@
-/** @type {import('tailwindcss').Config} */
+1/** @type {import('tailwindcss').Config} */
 module.exports = {
   // AQUI ESTÁ O SEGREDO: Dizemos para ele ler todos os arquivos .ejs dentro de views
   content: [
@@ -23,7 +23,6 @@ module.exports = {
     },
   },
   plugins: [
-    require('@tailwindcss/typography'), // Se tiver instalado, ajuda nos textos longos
-    // Se não instalou o typography, apenas remova essa linha do plugins
+    // Removed '@tailwindcss/typography' to measure size impact
   ],
 }

@@ -25,13 +25,14 @@
                         <input type="text" name="codigo" placeholder="Código ou Chave"
                             class="pl-3 pr-8 py-1 rounded-full border border-gray-300 text-xs focus:outline-none focus:border-cyan-500 w-full md:w-32 max-w-xs transition-all focus:w-40 uppercase font-mono mx-auto"
                             required>
-                        <button type="submit"
+                        <button type="submit" aria-label="Pesquisar" title="Pesquisar"
                             class="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-cyan-600">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
+                                stroke="currentColor" aria-hidden="true" focusable="false">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                             </svg>
+                            <span class="sr-only">Pesquisar</span>
                         </button>
                     </div>
                 </form>  
