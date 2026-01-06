@@ -42,11 +42,11 @@ const publicController = {
 
         const figuras = db.prepare(`SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC LIMIT ? OFFSET ?
         `).all(limit, offset);
-        //const figuras = db.prepare('SELECT * FROM figuras WHERE ativo = 1 ORDER BY nome ASC').all();
 
-        const total = db.prepare('SELECT COUNT(*) as count FROM figuras').get().count;
+        const total = db.prepare('SELECT COUNT(*) as count FROM figuras WHERE ativo = 1').get().count;
         const totalPages = Math.ceil(total / limit);
 
+        console.log("Total figuras:", total, "Total páginas:", totalPages);
         //const categorias = db.prepare('SELECT id, nome FROM categorias').all();
         // Full list used for quick-select dropdown in admin UI
         //const figurasAll = db.prepare('SELECT id, nome FROM figuras ORDER BY nome ASC').all();
