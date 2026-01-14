@@ -30,7 +30,7 @@ router.get('/pecas/espiritual/sao-pedro/:codigo?', (req, res) => {
     return res.redirect(301, '/v/6TPYK');
 });
 
-router.get('/pecas/:categoria/:slug/:codigo?', publicController.getDetalhe);
+//router.get('/pecas/:categoria/:slug/:codigo?', publicController.getDetalhe);
 
 // Validação de Peça (Busca por Código ou Chave)
 router.post('/validar', publicController.postValidarPeca);

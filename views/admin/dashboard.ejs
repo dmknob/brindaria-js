@@ -87,10 +87,10 @@
                         <!-- LÓGICA BLINDADA NO DASHBOARD TAMBÉM -->
                         <% 
                             let linkDash = '#';
-                            if (peca.codigo_exibicao) {
-                                linkDash = `/pecas/espiritual/${peca.slug}/${peca.codigo_exibicao.replace('#', '')}`;
-                            } else if (peca.chave_acesso) {
+                            if (peca.chave_acesso) {
                                 linkDash = `/v/${peca.chave_acesso}`;
+                            } else if (peca.codigo_exibicao) {
+                                linkDash = `/pecas/espiritual/${peca.slug}/${peca.codigo_exibicao.replace('#', '')}`;
                             }
                         %>
                         <a href="<%= linkDash %>" target="_blank" class="text-indigo-600 hover:text-indigo-900 font-medium">Ver</a>

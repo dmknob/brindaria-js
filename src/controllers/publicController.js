@@ -89,16 +89,33 @@ const publicController = {
 
         logger.info("Sitemap requested");
 
-        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1').all();
         const baseUrl = 'https://brindaria.com.br';
+        const pageLimit = parseInt(process.env.PAGINACAO_FIGURAS, 10) || 9;
+
+        // Paginacao similar a getCatalogo
+        const totalFiguras = db.prepare('SELECT COUNT(*) as count FROM figuras WHERE ativo = 1').get().count;
+        const totalPages = Math.max(1, Math.ceil(totalFiguras / pageLimit));
+
+        // Lista de slugs para URLs individuais
+        const figuras = db.prepare('SELECT slug FROM figuras WHERE ativo = 1 ORDER BY nome ASC').all();
 
         let xml = `<?xml version="1.0" encoding="UTF-8"?>
         <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
             <url><loc>${baseUrl}/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
-            <url><loc>${baseUrl}/contato</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-            <url><loc>${baseUrl}/pecas</loc><changefreq>daily</changefreq><priority>0.8</priority></url>
-        `;
-        // INCLUIR LOGICA DE PAGINAÇÃO NA GERAÇÃO DO SITEMAP DESTA SEÇÃO
+            <url><loc>${baseUrl}/contato</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>`;
+
+        // Incluir páginas paginadas do catálogo (page 1 sem query string)
+        for (let p = 1; p <= totalPages; p++) {
+            const loc = p === 1 ? `${baseUrl}/pecas` : `${baseUrl}/pecas?page=${p}`;
+            xml += `
+            <url>
+                <loc>${loc}</loc>
+                <changefreq>daily</changefreq>
+                <priority>0.8</priority>
+            </url>`;
+        }
+
+        // Incluir as páginas individuais das figuras
         figuras.forEach(f => {
             xml += `
             <url>
@@ -144,7 +161,7 @@ const publicController = {
         res.json(mapped);
     },
 
-
+/*
     // Rota: /pecas/:categoria/:slug/:codigo?
     getDetalhe: (req, res) => {
 
@@ -207,6 +224,7 @@ const publicController = {
             ogImage: 'https://brindaria.com.br' + figura.imagem_url
         });
     },
+    */
 
     // Rota: /v/:chave
     getPecaByKey: (req, res) => {

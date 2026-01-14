@@ -1,7 +1,7 @@
 // src/controllers/adminController.js
 const db = require('../../database/db');
 const auth = require('../middleware/auth');
-//const logger = require('../logger');
+const logger = require('../logger');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
