@@ -161,13 +161,13 @@ const publicController = {
         res.json(mapped);
     },
 
-/*
-    // Rota: /pecas/:categoria/:slug/:codigo?
+
+    // Rota: /pecas/:categoria/:slug
     getDetalhe: (req, res) => {
 
         logger.info("Peca detalhe page accessed", { params: req.params });
 
-        const { categoria, slug, codigo } = req.params;
+        const { categoria, slug } = req.params;
 
         // Também selecionamos a categoria slug para validar que a rota usa a categoria correta
         const figura = db.prepare(`
@@ -178,6 +178,7 @@ const publicController = {
         `).get(slug);
 
         if (!figura || figura.ativo !== 1) {
+            logger.info("Figura não encontrada: ", figura);
             return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
         }
 
@@ -185,6 +186,7 @@ const publicController = {
         // do modelo/figura, devolvemos 404 para evitar confusões entre categorias.
         const figuraCategoriaSlug = (figura.categoria_slug).toLowerCase();
         if ((categoria || '').toLowerCase() !== figuraCategoriaSlug) {
+            logger.info("Categoria não encontrada", categoria);
             return res.status(404).render('pages/404', { title: 'Figura não encontrada' });
         }
 
@@ -194,6 +196,7 @@ const publicController = {
         console.warn("CANONICAL: ",canonical);
         let metaDescription = figura.subtitulo || `Conheça a história de ${figura.nome}`;
 
+        /*
         if (codigo) {
             peca = db.prepare(`
                 SELECT * FROM pecas 
@@ -206,11 +209,12 @@ const publicController = {
                     WHERE figura_id = ? AND codigo_exibicao = ?
                 `).get(figura.id, '#' + codigo);
             }
-            
+        }
+*/            
             if (peca) {
                 pageTitle = `Peça ${peca.codigo_exibicao} - ${figura.nome}`;
             }
-        }
+        
 
         res.render('pages/peca-detalhe', {
             figura: figura, 
@@ -224,7 +228,7 @@ const publicController = {
             ogImage: 'https://brindaria.com.br' + figura.imagem_url
         });
     },
-    */
+
 
     // Rota: /v/:chave
     getPecaByKey: (req, res) => {
